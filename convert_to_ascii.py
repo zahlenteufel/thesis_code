@@ -6,6 +6,8 @@ import unidecode
 
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
-with codecs.open("corpus/head_tagged_corpus800.txt", "r", "utf-8") as corpus:
-    for line in corpus.readlines():
+with codecs.open("corpus/tagged_corpus_unic.txt", "r", "utf-8") as corpus:
+    for i, line in enumerate(corpus.readlines()):
         print unidecode.unidecode(line[:-1])
+        if i % 10000 == 0:
+            sys.stdout.flush()
