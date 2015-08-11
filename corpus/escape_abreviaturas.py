@@ -8,15 +8,15 @@ sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
 
 def capitalize(ss):
-    return ".".join(map(lambda s: s[0].upper() + s[1:], ss.split(".")))
+    return ".".join(map(lambda s: s[0].upper() + s[1:] if s else "", ss.split(".")))
 
 
 # TODO: lidiar con 4to.. 5to..
 
 dict_reemp = {}
 for abreviatura in abreviaturas.abreviaturas:
-    dict_reemp[capitalize(abreviatura + ".")] = \
-        dict_reemp[abreviatura + "."] = abreviatura.replace(" ", "")
+    dict_reemp[capitalize(abreviatura.replace(" ", ".") + ".")] = \
+        dict_reemp[abreviatura + "."] = abreviatura
 
 regex_siglas = re.compile(r"([A-Z]\.)+")
 regex_enum = re.compile(r"([0-9]+\.)")
