@@ -7,7 +7,7 @@ import predict_this.flm.flm_specification as FlmSpec
 input_model = sys.argv[1] if len(sys.argv) > 1 else "flm_models/trigramWGN.flm"
 output_image = sys.argv[2] if len(sys.argv) > 2 else "out.png"
 
-flm_spec = FlmSpec.FLM_Specification().initialize_with_model_file(input_model)
+flm_spec = FlmSpec.FLM_Specification(input_model)
 
 with tempfile.NamedTemporaryFile() as dot:
     print >>dot, flm_spec.visualize()

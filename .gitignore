@@ -5,4 +5,7 @@ corpus/tmp/*
 corpus/resultados
 plots/*
 flm_models/*.gz
+flm_models/*.factored
 *.log
+train_all_models.sh
+*.pyc
