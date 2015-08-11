@@ -2,5 +2,6 @@ corpus_quilombo/
 predict_this/
 corpus/libros_txt/*
 corpus/tmp/*
+corpus/resultados
 plots/*
 flm_models/*.gz
