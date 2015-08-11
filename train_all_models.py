@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from datetime import datetime
+from itertools import islice
 import glob
 import predict_this.text.text as Text
 import predict_this.flm.flm_specification as FlmSpec
@@ -18,8 +19,13 @@ def log(s):
 for flm_model_filename in glob.glob("flm_models/*.flm"):
     log("started training " + flm_model_filename)
 
-    flm_spec = FlmSpec.FLM_Specification().initialize_with_model_file(flm_model_filename)
+    flm_spec = FlmSpec.FLM_Specification(flm_model_filename)
 
+    print flm_model_filename
+    for line in islice(text.lines(), 5):
+        print " ".join(flm_spec.convert_to_flm_format(word) for word in line)
+
+    print "*" * 60
     # os.system("fngram-count -factor-file %s -no-virtual-end-sentence -lm -write-counts -text %s" % (
     #     flm_model_filename,
     #     factored_corpus_file
