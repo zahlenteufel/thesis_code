@@ -5,3 +5,4 @@ corpus/tmp/*
 corpus/resultados
 plots/*
 flm_models/*.gz
+*.log
