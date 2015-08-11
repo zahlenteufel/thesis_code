@@ -6,9 +6,14 @@ import abreviaturas
 sys.stdin = codecs.getreader('utf8')(sys.stdin)
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
+
+def capitalize(ss):
+    return ".".join(map(lambda s: s[0].upper() + s[1:], ss.split(".")))
+
 dict_reemp = {}
 for abreviatura in abreviaturas.abreviaturas:
-    dict_reemp[abreviatura + "."] = abreviatura.replace(" ", "")
+    dict_reemp[capitalize(abreviatura + ".")] = \
+        dict_reemp[abreviatura + "."] = abreviatura.replace(" ", "")
 
 regex_siglas = re.compile(r"([A-Z]\.)+")
 regex_enum = re.compile(r"([0-9]+\.)")
