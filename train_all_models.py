@@ -21,15 +21,15 @@ def log(s):
 
 
 def dump_training_file(flm_spec, output_file):
-    for i in xrange(2500):
+    for i in xrange(10000):
         index = str(i).zfill(4)
-        tagged_filename = "corpus/resultados/analisis_%s.txt.ascii" % index
+        tagged_filename = "corpus/tagged_chunks/%s.ascii" % index
         tagged_text = Text.Text.from_freeling_output_file(tagged_filename)
-        # use tmpfiles....
-        with open(tagged_filename + ".factored", "w") as factored_file:
+        # TODO: use tmpfiles
+        with open("corpus/factored_chunks/" + index, "w") as factored_file:
             for tagged_line in tagged_text.lines():
                 factored_file.write(" ".join(map(flm_spec.convert_to_flm_format, tagged_line)) + "\n")
-    os.system("./concatenate_files.sh corpus/resultados/ \"*.factored\" " + output_file)
+    os.system("./concatenate_files.sh corpus/factored_chunks/ \"*\" " + output_file)
 
 
 with open("train_all_models.sh", "w") as training_script:
@@ -41,10 +41,10 @@ with open("train_all_models.sh", "w") as training_script:
 
         factored_file_filename = flm_model_filename + ".factored"
         flm_spec = FlmSpec.FLM_Specification(flm_model_filename)
-        dump_training_file(flm_spec, factored_file_filename)
+        # dump_training_file(flm_spec, factored_file_filename)
 
         print >>training_script, "echo \"$(date): training %s\" >> %s" % (flm_model_filename, LOG_FILENAME)
-        print >>training_script, "fngram-count -factor-file %s -no-virtual-end-sentence -lm -write-counts -text %s" % \
+        print >>training_script, "fngram-count -factor-file %s -debug 4 -no-virtual-end-sentence -lm -write-counts -text %s" % \
             (flm_model_filename, factored_file_filename)
 
         log("done factoring text for " + flm_model_filename)

@@ -1,6 +1,6 @@
 1
 ## skip 4gram
-W : 3 W(-1) W(-2) W(-3) skip_4gram.count.gz skip_4gram.lm.gz 9
+W : 3 W(-1) W(-2) W(-3) flm_models/skip_4gram.count.gz flm_models/skip_4gram.lm.gz 9
 W1,W2,W3 W1
 W1,W2,W3 W2
 W1,W2,W3 W3
