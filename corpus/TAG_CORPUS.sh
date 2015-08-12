@@ -15,7 +15,7 @@ for i in {0..9999}
 do
 	((x=x%N)); ((x++==0)) && wait;
 	ind=`printf %04d $(echo $i | sed 's/[^0-9]*//g')`
-	echo $ind $(date)
+	echo "$(date): tagging $ind"
 	$analyze_es --nortk --nortkcon --flush < chunks/$ind > tagged_chunks/$ind &
 done
 )
