@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import codecs
-import sys
 import unidecode
 
-sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-
-with codecs.open("corpus/tagged_corpus_unic.txt", "r", "utf-8", buffering=4096) as corpus:
-    for i, line in enumerate(corpus.readlines()):
-        print unidecode.unidecode(line[:-1])
-        if i % 10000 == 0:
-            sys.stdout.flush()
+for i in xrange(2500):
+    filename = "corpus/resultados/analisis_%s.txt" % str(i).zfill(4)
+    with codecs.open(filename, "r", "utf-8") as corpus:
+        with codecs.open(filename + ".ascii", "w", "utf-8") as ascii_corpus:
+            for line in corpus.readlines():
+                print >>ascii_corpus, unidecode.unidecode(line[:-1])

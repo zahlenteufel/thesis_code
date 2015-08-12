@@ -5,7 +5,7 @@
 [ ! -d pedazos_corpus ] && mkdir pedazos_corpus
 [ ! -d resultados ] && mkdir resultados
 
-split --number=l/10000 -d corpus_cleaned.txt pedazos_corpus/
+split --number=l/10000 -d tmp/corpus_cleaned.txt pedazos_corpus/
 
 analyze_es="analyze -f /usr/local/share/freeling/config/es.cfg"
 
