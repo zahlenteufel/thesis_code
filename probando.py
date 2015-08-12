@@ -1,24 +1,9 @@
-# import predict_this as pd
-# import predict_this.text.text as Text
-import predict_this.flm.flm_specification as FlmSpec
-# import predict_this.text.factored_text as FactoredText
-# import predict_this.predictor.flm_predictor as FLMP
-# import predict_this.text.prediction_text as PT
-# text = Text.Text.from_flat_file("prueba.txt")
-flm_spec = FlmSpec.FLM_Specification().initialize_with_model_file("flm_models/trigramWGN.flm")
+from predict_this.flm.flm_specification import FLM_Specification
+from predict_this.text.prediction_text import PredictionText
+from itertools import izip
 
-print flm_spec.visualize()
-# # ft = FactoredText.FactoredText(flm, text)
+prediction_text = PredictionText(1)
+predictor = FLM_Specification("flm_models/bigramWG.flm").predictor()
 
-# prediction_text = PT.PredictionText(1)
-
-# text = Text.Text.from_flat_file("prueba.txt")
-
-# for line in text.lines():
-#     for word in line:
-#         print flm_spec.convert_to_flm_format(word)
-
-
-
-# predictor = FLMP.FLMPredictor(flm_spec, 3, "bigramWG.flm", "count_file")
-# predictor.predict(prediction_text)
+for target_word, prediction in izip(prediction_text.target_words(), predictor.batch_predict(prediction_text)):
+    print target_word.actual_word, target_word.cloze_prob(), prediction
