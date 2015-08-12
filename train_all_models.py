@@ -18,6 +18,7 @@ def now():
 
 def log(s):
     print >>log_file, now(), ":", s
+    log_file.flush()
 
 
 def dump_training_file(flm_spec, output_file):
@@ -54,7 +55,7 @@ with open("train_all_models.sh", "w") as training_script:
         log("done factoring text for " + flm_model_filename)
 
     print >>training_script, "echo \"$(date): finished training\" >>", LOG_FILENAME
-log("done facotring and creating script for training")
+log("done factoring and creating script for training")
 
 print "Factored files, prepared script for training."
 print "To continue training execute ./train_all_models.sh"
