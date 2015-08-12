@@ -40,8 +40,12 @@ with open("train_all_models.sh", "w") as training_script:
         log("factoring text for " + flm_model_filename)
 
         factored_file_filename = flm_model_filename + ".factored"
-        flm_spec = FlmSpec.FLM_Specification(flm_model_filename)
-        # dump_training_file(flm_spec, factored_file_filename)
+
+        if os.path.isfile(factored_file_filename):
+            log(factored_file_filename + " already exists, skipping")
+        else:
+            flm_spec = FlmSpec.FLM_Specification(flm_model_filename)
+            dump_training_file(flm_spec, factored_file_filename)
 
         print >>training_script, "echo \"$(date): training %s\" >> %s" % (flm_model_filename, LOG_FILENAME)
         print >>training_script, "fngram-count -factor-file %s -debug 4 -no-virtual-end-sentence -lm -write-counts -text %s" % \
