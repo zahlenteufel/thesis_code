@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
 from datetime import datetime
-from itertools import islice
+from itertools import imap
+import os
 import glob
 import predict_this.text.text as Text
 import predict_this.flm.flm_specification as FlmSpec
-
-text = Text.Text.from_freeling_output_file("corpus/corpus800.txt")
 
 LOG_FILENAME = "training.log"
 
@@ -21,11 +20,17 @@ def log(s):
     print >>log_file, now(), ":", s
 
 
-def dump_training_file(flm_spec, text, filename, MAX_LINES=None):
-    with open(filename, "w") as training_file:
-        lines = islice(text.lines(), MAX_LINES) if MAX_LINES else text.lines()
-        for line in lines:
-            print >>training_file, " ".join(flm_spec.convert_to_flm_format(word) for word in line)
+def dump_training_file(flm_spec, output_file):
+    for i in xrange(2500):
+        index = str(i).zfill(4)
+        tagged_filename = "corpus/resultados/analisis_%s.txt.ascii" % index
+        tagged_text = Text.Text.from_freeling_output_file(tagged_filename)
+        # use tmpfiles....
+        with open(tagged_filename + ".factored", "w") as factored_file:
+            for tagged_line in tagged_text.lines():
+                factored_file.write(" ".join(map(flm_spec.convert_to_flm_format, tagged_line)) + "\n")
+    os.system("./concatenate_files.sh corpus/resultados/ \"*.factored\" " + output_file)
+
 
 with open("train_all_models.sh", "w") as training_script:
     print >>training_script, "#!/usr/bin/env bash\n"
@@ -36,7 +41,7 @@ with open("train_all_models.sh", "w") as training_script:
 
         factored_file_filename = flm_model_filename + ".factored"
         flm_spec = FlmSpec.FLM_Specification(flm_model_filename)
-        dump_training_file(flm_spec, text, factored_file_filename)
+        dump_training_file(flm_spec, factored_file_filename)
 
         print >>training_script, "echo \"$(date): training %s\" >> %s" % (flm_model_filename, LOG_FILENAME)
         print >>training_script, "fngram-count -factor-file %s -no-virtual-end-sentence -lm -write-counts -text %s" % \
