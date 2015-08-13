@@ -7,7 +7,7 @@ corpus/chunks/*
 corpus/tagged_chunks/*
 corpus/factored_chunks/*
 flm_models/*.gz
-flm_models/*.factored
+flm_models/*.factored*
 train_all_models.sh
 *.log
 *.pyc
