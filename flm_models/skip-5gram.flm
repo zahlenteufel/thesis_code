@@ -1,16 +1,36 @@
 1
-## skip 4gram
-W : 3 W(-1) W(-2) W(-3) flm_models/skip_4gram.count.gz flm_models/skip_4gram.lm.gz 13
+## skip 5-gram
+W : 4  W(-1) W(-2) W(-3) W(-4) flm_models/skip_5gram.count.gz flm_models/skip_5gram.lm.gz  33
+W1,W2,W3,W4 W1
+W1,W2,W3,W4 W2
+W1,W2,W3,W4 W3
+W1,W2,W3,W4 W4
+W2,W3,W4 W2
+W2,W3,W4 W3
+W2,W3,W4 W4
+W1,W3,W4 W1
+W1,W3,W4 W3
+W1,W3,W4 W4
+W1,W2,W4 W1
+W1,W2,W4 W2
+W1,W2,W4 W4
 W1,W2,W3 W1
 W1,W2,W3 W2
 W1,W2,W3 W3
-W1,W2 W1
-W1,W2 W2
-W1,W3 W1
-W1,W3 W3
+W3,W4 W3
+W3,W4 W4
+W2,W4 W2
+W2,W4 W4
 W2,W3 W2
 W2,W3 W3
-W1 W1
-W2 W2
+W1,W4 W1
+W1,W4 W4
+W1,W3 W1
+W1,W3 W3
+W1,W2 W1
+W1,W2 W2
+W4 W4
 W3 W3
+W2 W2
+W1 W1
 0 0
