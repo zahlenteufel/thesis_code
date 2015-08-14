@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ ! $# -eq 3 ]; then
-	echo "Usage $0 folder regex output_file"
+	echo "Usage: $0 folder regex output_file"
 	echo "concatenates many files together"
 	exit 1
 fi
