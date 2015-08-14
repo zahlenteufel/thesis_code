@@ -1,0 +1,10 @@
+1
+## trigram W,C,G
+W : 6 W(-1) W(-2) C(-1) C(-2) G(-1) G(-2) flm_models/trigramWCG.count.gz flm_models/trigramWCG.lm.gz 7
+W1,C1,G1,W2,C2,G2 W2
+W1,C1,G1,C2,G2 G2
+W1,C1,G1,C2 C2
+W1,C1,G1 W1
+C1,G1 G1
+C1 C1
+0 0

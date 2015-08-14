@@ -1,8 +1,0 @@
-1
-## trigram W,P
-W : 4 W(-1) W(-2) P(-1) P(-2) flm_models/trigramWP.count.gz flm_models/trigramWP.lm.gz 5
-W1,P1,W2,P2 W2
-W1,P1,P2 P2
-W1,P1 W1
-P1 P1
-0 0

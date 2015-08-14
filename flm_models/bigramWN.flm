@@ -1,0 +1,6 @@
+1
+## bigram W N
+W : 2 W(-1) N(-1) flm_models/bigramWN.count.gz flm_models/bigramWN.lm.gz 3
+W1,N1 W1
+N1 N1
+0 0
