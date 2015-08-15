@@ -31,6 +31,9 @@ def dump_training_file(flm_spec, output_file):
         with open("corpus/factored_chunks/" + index, "w") as factored_file:
             for tagged_line in tagged_text.lines():
                 factored_file.write(" ".join(map(flm_spec.convert_to_flm_format, tagged_line)) + "\n")
+        if i % 100 == 0:
+            log("factoring... %d%%" % i / 100)
+    log("done factoring chunks, concatenating")
     os.system("./concatenate_files.sh corpus/factored_chunks/ \"*\" " + output_file)
 
 flm_spec = FlmSpec.FLM_Specification("flm_models/dummy.flm")
