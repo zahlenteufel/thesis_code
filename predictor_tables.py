@@ -20,7 +20,7 @@ predictors = [HumanPredictor(), UnigramCachePredictor()] + \
 print "word", " ".join([predictor.name() for predictor in predictors])
 
 # print table
-all_predictions = zip(*[predictor.batch_predict(prediction_texts, debug=args.debug_fngram) for predictor in predictors])
+all_predictions = zip(*[predictor.batch_predict(prediction_texts, args.debug_fngram) for predictor in predictors])
 for target_word, predictions in izip(prediction_texts.target_words(), all_predictions):
     print target_word, " ".join(map(str, predictions))
     sys.stdout.flush()
