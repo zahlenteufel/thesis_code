@@ -38,7 +38,7 @@ with open("flm_models/skip-%dgram.flm" % order, "w") as flm:
     for i in xrange(1, order):
         print >>flm, "W(-%d)" % i,
     # we can use the *same* lm and count file as the regular n-gram model
-    print >>flm, "flm_models/%d-gram.count.gz flm_models/%d-gram.lm.gz " % (order, order),
+    print >>flm, "flm_models/%dgram.count.gz flm_models/%dgram.lm.gz " % (order, order),
     combinations = list(all_combinations("W%d" % d for d in xrange(1, order)))
     print >>flm, len(combinations)
     print >>flm, "\n".join(combinations)
