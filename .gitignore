@@ -11,3 +11,4 @@ flm_models/*.factored*
 train_all_models.sh
 *.log
 *.pyc
+venv/
