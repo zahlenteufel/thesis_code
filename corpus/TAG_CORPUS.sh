@@ -19,4 +19,9 @@ do
 	$analyze_es --nortk --nortkcon --nodate --noloc --flush < chunks/$ind > tagged_chunks/$ind &
 done
 )
+echo converting to ascii
+
+cd ..
+python convert_to_ascii
+
 echo terminado $(date)
