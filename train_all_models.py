@@ -58,7 +58,7 @@ with open("train_all_models.sh", "w") as training_script:
             log("'%s' already exists, skip training." % flm_spec.model_file())
         else:
             any_training_necessary = True
-            assert flm_spec.factors() <= {"W", "G", "N", "C", "P"}, " must use common factors only.."
+            assert flm_spec.factors() <= {"W", "G", "N", "C", "P"}, " must use common factors only.. (%s)" % flm_spec.model_file()
             print >>training_script, "echo \"$(date): training %s\" | tee -a %s" % (flm_model_filename, LOG_FILENAME)
             print >>training_script, "fngram-count -factor-file %s -no-virtual-end-sentence -lm -write-counts -text %s" % \
                 (flm_model_filename, FACTORED_CORPUS_FILE)
