@@ -1,10 +1,10 @@
 from more_itertools import peekable
 from itertools import ifilter, imap
-import codecs
+import io
 import sys
 
-sys.stdin = codecs.getreader('utf8')(sys.stdin)
-sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+stdin = io.open(sys.stdin.fileno(), encoding="utf-8")
+stdout = io.open(sys.stdout.fileno(), encoding="utf-8")
 
 
 # class MockFile:
@@ -14,9 +14,9 @@ sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 #     def readlines(self):
 #         return self.it
 
-f = sys.stdin
+f = stdin
 
-lines = peekable(ifilter(bool, imap(unicode.rstrip, f.readlines())))
+lines = peekable(ifilter(bool, imap(unicode.rstrip, stdin)))
 saved = ""
 
 for line in lines:
@@ -30,7 +30,7 @@ for line in lines:
                 not (lines.peek("a") or "a")[0].isupper():
             saved += line[:-1]
         else:
-            print saved + line
+            stdout.write(saved + line + "\n")
             saved = ""
 if saved:
-    print saved
+    stdout.write(saved + "\n")

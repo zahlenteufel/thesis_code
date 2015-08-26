@@ -16,7 +16,7 @@ do
 	((x=x%N)); ((x++==0)) && wait;
 	ind=`printf %04d $(echo $i | sed 's/[^0-9]*//g')`
 	echo "$(date): tagging $ind"
-	$analyze_es --nortk --nortkcon --nodate --noloc --flush < chunks/$ind > tagged_chunks/$ind &
+	$analyze_es --nortk --nortkcon --nonumb --nocoref --noorto --nodate --noloc --flush < chunks/$ind > tagged_chunks/$ind &
 done
 )
 echo converting to ascii

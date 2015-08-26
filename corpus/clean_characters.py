@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import codecs
+import io
 import sys
 
-sys.stdin = codecs.getreader('utf8')(sys.stdin)
-sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+stdin = io.open(sys.stdin.fileno(), encoding="utf-8")
+stdout = io.open(sys.stdout.fileno(), encoding="utf-8")
+
 
 replace_dict = {
     u"\x0c": u" ",
@@ -62,8 +63,8 @@ replace_dict = {
     u"_": u"",
 }
 
-for l in sys.stdin.readlines():
+for line in stdin:
     s = u""
-    for c in l[:-1]:
-        s += replace_dict.get(c, c)
-    print s
+    for character in line:
+        s += replace_dict.get(character, character)
+    stdout.write(s + "\n")

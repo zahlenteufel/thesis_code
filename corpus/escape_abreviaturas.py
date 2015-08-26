@@ -1,10 +1,10 @@
-import codecs
-import sys
 import re
 import abreviaturas
+import io
+import sys
 
-sys.stdin = codecs.getreader('utf8')(sys.stdin)
-sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+stdin = io.open(sys.stdin.fileno(), encoding="utf-8")
+stdout = io.open(sys.stdout.fileno(), encoding="utf-8")
 
 
 def capitalize(ss):
@@ -22,8 +22,8 @@ regex_siglas = re.compile(r"([A-Z]\.)+")
 regex_enum = re.compile(r"([0-9]+\.)")
 regex_abreviaturas = re.compile(r"(^| )(%s)" % "|".join(map(re.escape, dict_reemp.keys())))
 
-for index, line in enumerate(sys.stdin.readlines()):
-    print regex_enum.sub(
+for index, line in enumerate(stdin):
+    stdout.write(regex_enum.sub(
         lambda mo: "",
         regex_siglas.sub(
             lambda mo: mo.string[mo.start():mo.end()].replace(".", " ")[:-1],
@@ -32,8 +32,9 @@ for index, line in enumerate(sys.stdin.readlines()):
                 line[:-1]
                 )
             )
-        )
+        ) + "\n"
+    )
     if index % 1000 == 0:
-        sys.stdout.flush()
+        stdout.flush()
 
 print >>sys.stderr, "abreviaturas, siglas, and enums escaped"
