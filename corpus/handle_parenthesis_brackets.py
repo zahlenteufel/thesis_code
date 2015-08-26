@@ -1,28 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from itertools import imap
-import codecs
-import sys
 import re
+import io
+import sys
 
-sys.stdin = codecs.getreader('utf8')(sys.stdin)
-sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-# sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+stdin = io.open(sys.stdin.fileno(), encoding="utf-8")
+stdout = io.open(sys.stdout.fileno(), encoding="utf-8")
 
-
-# class MockFile:
-#     def __init__(self, str):
-#         self.it = iter(str.split("\n"))
-
-#     def readlines(self):
-#         return self.it
-
-# f = MockFile(u"""
-#     «esto esta a medias....
-#     «esto no», «esto si se imprime, joder!»
-# """)
-
-f = sys.stdin
 
 MIN_ANGLES_INSIDE_NEWLINE = 3
 
@@ -35,7 +20,7 @@ def get_match_if_long_enough(mo):
         return ""
 
 
-lines = imap(unicode.strip, f.readlines())
+lines = imap(unicode.strip, stdin)
 saved = ""
 
 regex_matched_brackets = re.compile(r"\[.*?\]")
@@ -48,13 +33,13 @@ for line in lines:
     for inside in regex_matched_parenthesis.findall(line):
         words = inside[1:-1].split()
         if len(words) >= MIN_ANGLES_INSIDE_NEWLINE:
-            print " ".join(words)
+            stdout.write(" ".join(words) + "\n")
     line = regex_matched_parenthesis.sub("", line)
     for inside in regex_matched_angles.findall(line):
         words = inside.split()
         if len(words) >= MIN_ANGLES_INSIDE_NEWLINE:
-            print " ".join(words)
+            stdout.write(" ".join(words) + "\n")
 
     line = regex_matched_angles.sub(get_match_if_long_enough, line)
     if line:
-        print line
+        stdout.write(line + "\n")
