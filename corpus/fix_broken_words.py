@@ -3,18 +3,8 @@ from itertools import ifilter, imap
 import io
 import sys
 
-stdin = io.open(sys.stdin.fileno(), encoding="utf-8")
-stdout = io.open(sys.stdout.fileno(), encoding="utf-8")
-
-
-# class MockFile:
-#     def __init__(self, str):
-#         self.it = iter(str.split("\n"))
-
-#     def readlines(self):
-#         return self.it
-
-f = stdin
+stdin = io.open(sys.stdin.fileno(), "r", encoding="utf-8")
+stdout = io.open(sys.stdout.fileno(), "w", encoding="utf-8")
 
 lines = peekable(ifilter(bool, imap(unicode.rstrip, stdin)))
 saved = ""

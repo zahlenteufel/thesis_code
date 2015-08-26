@@ -1,7 +1,7 @@
 corpus_quilombo/
 predict_this/
 plots/*
-corpus/libros_txt/*
+corpus/spanish_books/*
 corpus/tmp/*
 corpus/chunks/*
 corpus/tagged_chunks/*
