@@ -3,8 +3,8 @@ import abreviaturas
 import io
 import sys
 
-stdin = io.open(sys.stdin.fileno(), encoding="utf-8")
-stdout = io.open(sys.stdout.fileno(), encoding="utf-8")
+stdin = io.open(sys.stdin.fileno(), "r", encoding="utf-8")
+stdout = io.open(sys.stdout.fileno(), "w", encoding="utf-8")
 
 
 def capitalize(ss):
@@ -36,5 +36,3 @@ for index, line in enumerate(stdin):
     )
     if index % 1000 == 0:
         stdout.flush()
-
-print >>sys.stderr, "abreviaturas, siglas, and enums escaped"

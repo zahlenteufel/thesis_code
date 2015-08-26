@@ -19,9 +19,15 @@ do
 	$analyze_es --nortk --nortkcon --nonumb --nocoref --noorto --nodate --noloc --flush < chunks/$ind > tagged_chunks/$ind &
 done
 )
-echo converting to ascii
 
-cd ..
-python convert_to_ascii
+echo $(date): finished tagging
 
-echo terminado $(date)
+echo $(date): converting to ascii
+
+python convert_to_ascii.py
+
+echo $(date): concatenating files
+
+find tagged_corpus/ -type f -print0 -name "*.ascii" | sort -z | xargs -0 cat -- > factored_corpus_WGNCP.txt
+
+echo $(date): finished 
