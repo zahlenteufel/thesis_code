@@ -31,4 +31,3 @@ echo $(date): concatenating files
 find tagged_corpus/ -type f -print0 -name "*.ascii" | sort -z | xargs -0 cat -- > factored_corpus_WGNCP.txt
 
 echo $(date): finished 
-
