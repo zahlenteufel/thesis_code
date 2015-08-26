@@ -1,6 +1,6 @@
 1
 ## bigram W P
 W : 2 W(-1) P(-1) flm_models/bigramWP.count.gz flm_models/bigramWP.lm.gz 3
-W1,P1 W1
-P1 P1
-0 0
+W1,P1 W1 kndiscount gtmin 1 interpolate
+P1 P1 kndiscount gtmin 1 interpolate
+0 0 kndiscount gtmin 1

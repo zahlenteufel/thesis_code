@@ -41,7 +41,7 @@ def dump_training_file(flm_spec, output_file):
 
 
 if not os.path.isfile(FACTORED_CORPUS_FILE):
-    flm_spec = FlmSpec.FLM_Specification("flm_models/dummy.flm")
+    flm_spec = FlmSpec.FLM_Specification("flm_models/WGNCP.flm.dummy")
     dump_training_file(flm_spec, FACTORED_CORPUS_FILE)
 
 with open("train_all_models.sh", "w") as training_script:
