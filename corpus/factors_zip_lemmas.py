@@ -28,4 +28,4 @@ with open("factored_corpus_WGNCP.txt") as fcorpus:
     with open("factored_corpus_WGNCPL.txt", "w") as result:
         for line in fcorpus:
             line = line[:-1]
-            print >>result, "\n".join(imap(insert_lemma_as_factor, line.split(), lemmas))
+            print >>result, " ".join(imap(insert_lemma_as_factor, line.split(), lemmas))

@@ -1,0 +1,7 @@
+1
+## 4gramL
+W : 3 L(-1) L(-2) L(-3) flm_models/4gramL.count.gz flm_models/4gramL.lm.gz 4
+L1,L2,L3 L3 kndiscount gtmin 1 interpolate
+L1,L2 L2 kndiscount gtmin 1 interpolate
+L1 L1 kndiscount gtmin 1 interpolate
+0 0 kndiscount gtmin 1

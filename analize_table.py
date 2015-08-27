@@ -11,29 +11,56 @@ def select(table, column):
 
 
 def filter_valid(x1, x2):
-    return zip(*[(e1, e2) for e1, e2 in izip(x1, x2) if not math.isinf(e1) and not math.isinf(e2)])
+    return zip(*[
+        (e1, e2) for e1, e2 in izip(x1, x2) if
+        not math.isinf(e1) and
+        not math.isinf(e2) and
+        not math.isnan(e1) and
+        not math.isnan(e2)])
 
-row = header = sys.stdin.readline()[:-1].split()[1:]
-table = []
+header = sys.stdin.readline()[:-1].split()[1:]
+table_probs = []
+table_ppls = []
 while True:
     row = sys.stdin.readline()[:-1].split()
     if not row:
         break
-    word, nums = row[0], map(float, row[1:])
-    if all(map(lambda x: x >= 0 and not math.isinf(x), nums)):
-        table.append(nums)
-    else:
-        print >>sys.stderr, word, nums
+    word, nums = row[0], map(lambda p: tuple(map(float, p.split(","))), row[1:])
+
+    probs, ppls = zip(*nums)
+    if any(map(lambda x: x == 0, probs)):
+        print word, probs
+
+    table_probs.append(probs)
+    table_ppls.append(ppls)
+
+
+def plot(x, y, xlabel, ylabel, title):
+    plt.close()
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.scatter(x, y, alpha=0.2)
+    plt.title(title)
+    print pearsonr(x, y)[0]
+    plt.show()
+
+
+def logit_plot(x, y, xlabel, ylabel, title):
+    plot(logit(x), logit(y), "logit " + xlabel, "logit " + ylabel, title)
+
 
 n = len(header)
 for i in xrange(1, n):
-    cloze_prob = logit(select(table, 0))
-    y = logit(select(table, i))
-    cloze_prob, y = filter_valid(cloze_prob, y)
-    title = "logit %s vs. logit %s" % (header[0], header[i])
-    plt.close()
-    plt.xlabel("logit " + header[0])
-    plt.ylabel("logit " + header[i])
-    plt.scatter(cloze_prob, y, alpha=0.2)
-    print pearsonr(cloze_prob, y)[0]
-    plt.show()
+    name = header[0]
+    name2 = header[i]
+
+    cloze_prob = select(table_probs, 0)
+    prob = select(table_probs, i)
+    cloze_prob, prob = filter_valid(cloze_prob, prob)
+    # print sorted(cloze_prob, reverse=True)
+    # print sorted(prob, reverse=True)
+    # logit_plot(cloze_prob, prob, name, name2, "probabilities")
+
+    # cloze_ppl = select(table_ppls, 0)
+    # yppl = select(table_ppls, i)
+    # plot(cloze_ppl, yppl, name, name2, "perplexity")

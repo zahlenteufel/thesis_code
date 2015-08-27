@@ -1,0 +1,10 @@
+1
+## trigram L,G,N
+W : 6 L(-1) L(-2) G(-1) G(-2) N(-1) N(-2) flm_models/trigramLGN.count.gz flm_models/trigramLGN.lm.gz 7
+L1,G1,N1,L2,G2,N2 N2 kndiscount gtmin 1 interpolate
+L1,G1,N1,L2,G2 G2 kndiscount gtmin 1 interpolate
+L1,G1,N1,L2 L2 kndiscount gtmin 1 interpolate
+L1,G1,N1 N1 kndiscount gtmin 1 interpolate
+L1,G1 G1 kndiscount gtmin 1 interpolate
+L1 L1 kndiscount gtmin 1 interpolate
+0 0 kndiscount gtmin 1
