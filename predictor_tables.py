@@ -22,8 +22,13 @@ predictors = [HumanPredictor(), UnigramCachePredictor()] + \
 # print header
 print "word", " ".join([predictor.name() for predictor in predictors])
 
+all_predictions = []
 # print table
-all_predictions = zip(*[predictor.batch_predict(prediction_texts, args.debug) for predictor in predictors])
+for predictor in predictors:
+    print >>sys.stderr, predictor.name()
+    all_predictions.append(predictor.batch_predict(prediction_texts, args.debug))
+all_predictions = zip(*all_predictions)
+
 for target_word, predictions in izip(prediction_texts.target_words(), all_predictions):
     print target_word, " ".join(map(lambda prediction: "%f,%f" % prediction, predictions))
     sys.stdout.flush()

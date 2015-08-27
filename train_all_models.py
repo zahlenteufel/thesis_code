@@ -22,7 +22,7 @@ def log(s):
     log_file.flush()
 
 
-FACTORED_CORPUS_FILE = "corpus/factored_corpus_WGNCP.txt"
+FACTORED_CORPUS_FILE = "corpus/factored_corpus_WGNCPL.txt"
 
 
 def dump_training_file(flm_spec, output_file):
@@ -42,7 +42,9 @@ def dump_training_file(flm_spec, output_file):
 
 if not os.path.isfile(FACTORED_CORPUS_FILE):
     flm_spec = FlmSpec.FLM_Specification("flm_models/WGNCP.flm.dummy")
-    dump_training_file(flm_spec, FACTORED_CORPUS_FILE)
+    dump_training_file(flm_spec, "corpus/factored_corpus_WGNCP.txt")
+    # TODO: execute this directly..
+    assert False, "now you have to execute factors_zip_lemmas.py in corpus"
 
 with open("train_all_models.sh", "w") as training_script:
     print >>training_script, "#!/usr/bin/env bash\n"
@@ -58,7 +60,7 @@ with open("train_all_models.sh", "w") as training_script:
             log("'%s' already exists, skip training." % flm_spec.model_file())
         else:
             any_training_necessary = True
-            assert flm_spec.factors() <= {"W", "G", "N", "C", "P"}, " must use common factors only.. (%s)" % flm_spec.model_file()
+            assert flm_spec.factors() <= {"W", "G", "N", "C", "P", "L"}, " must use common factors only.. (%s)" % flm_spec.model_file()
             print >>training_script, "echo \"$(date): training %s\" | tee -a %s" % (flm_model_filename, LOG_FILENAME)
             print >>training_script, "fngram-count -factor-file %s -no-virtual-end-sentence -unk -lm -write-counts -text %s" % \
                 (flm_model_filename, FACTORED_CORPUS_FILE)
