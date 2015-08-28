@@ -5,6 +5,9 @@ from scipy.stats.stats import pearsonr
 import math
 import sys
 
+# USAGE:
+# pipe the results of predictor_tables
+
 
 def select(table, column):
     return [row[column] for row in table]

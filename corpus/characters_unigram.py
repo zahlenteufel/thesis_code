@@ -3,7 +3,7 @@ import io
 import sys
 
 stdin = io.open(sys.stdin.fileno(), encoding="utf-8")
-stdout = io.open(sys.stdout.fileno(), encoding="utf-8")
+stdout = io.open(sys.stdout.fileno(), "w", encoding="utf-8")
 
 hist = dict()
 
