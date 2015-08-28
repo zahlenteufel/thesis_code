@@ -45,5 +45,5 @@ for target_word, predictions in izip(prediction_texts.target_words(), all_predic
             map(lambda prediction: unicode(prediction[0]), predictions)
             # don't print perplexity (prediction[1]) just yet
             )
-        ) +
-    "\n")
+        ) + "\n"
+    )

@@ -5,6 +5,7 @@ progress_bar = progressbar.ProgressBar()
 progress_bar.maxval = 10000
 progress_bar.start()
 
+
 def get_lemmas():
     for i in xrange(10000):
         progress_bar.update(i)
@@ -18,6 +19,7 @@ def get_lemmas():
 
 
 lemmas = get_lemmas()
+
 
 def insert_lemma_as_factor(factors, lemma):
     f = factors.split(":")
