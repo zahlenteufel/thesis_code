@@ -30,9 +30,8 @@ for index, line in enumerate(stdin):
             regex_abreviaturas.sub(
                 lambda mo: " " + dict_reemp[mo.string[mo.start():mo.end()].lstrip()],
                 line[:-1]
-                )
             )
-        ) + "\n"
-    )
+        )
+    ) + "\n")
     if index % 1000 == 0:
         stdout.flush()

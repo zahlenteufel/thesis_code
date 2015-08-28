@@ -23,7 +23,7 @@ lemmas = get_lemmas()
 
 def insert_lemma_as_factor(factors, lemma):
     f = factors.split(":")
-    return ":".join(f[:1] + ["L-"+lemma] + f[1:])
+    return ":".join(f[:1] + ["L-" + lemma] + f[1:])
 
 
 with open("factored_corpus_WGNCP.txt") as fcorpus:

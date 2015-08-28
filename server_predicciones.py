@@ -55,7 +55,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def get_predicciones(self, order, textnum, indice_faltante):
         linea = linecache.getline("%s/%d-grams/texto_%d.txt" % (os.environ["PREDICTIONS_PATH"], order, textnum), indice_faltante + 1)
         return "<table><tr><td>" + \
-            "</td></tr><tr><td>".join((logp+"</td><td>"+palabra(int(ind_palabra)) for logp, ind_palabra in grouper(linea.split(" "), 2))) + "</tr></table>"
+            "</td></tr><tr><td>".join((logp + "</td><td>" + palabra(int(ind_palabra)) for logp, ind_palabra in grouper(linea.split(" "), 2))) + "</tr></table>"
 
     def generar_codigo(self, num_texto):
         assert(num_texto in (1, 2, 3, 4, 5, 7, 8))
