@@ -9,14 +9,13 @@ from itertools import izip
 import argparse
 
 
-def print_predictor_tables():
-    stdout = io.open(sys.stdout.fileno(), "w", encoding="utf-8")
+def print_predictor_tables(file):
     args = argument_parser()
     prediction_texts = PredictionTexts(args.text_numbers)
     predictors = [HumanPredictor(), UnigramCachePredictor()] + \
         map(NgramPredictor, args.ngram_predictor_orders) + \
         [FLM_Specification(flm_model_filename).predictor() for flm_model_filename in args.flm_model_filenames]
-    print_table(stdout, predictors, prediction_texts)
+    print_table(file, predictors, prediction_texts)
 
 
 def argument_parser():
@@ -46,8 +45,9 @@ def predictions_table(predictors, prediction_texts):
 
 
 def transpose(table):
-    return zip(*table)
+    return map(list, zip(*table))
 
 
 if __name__ == "__main__":
-    print_predictor_tables()
+    stdout = io.open(sys.stdout.fileno(), "w", encoding="utf-8")
+    print_predictor_tables(stdout)
