@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import io
 import sys
 import numpy as np
-from itertools import count
 from numpy import mean
 from numpy import log10
 
@@ -11,35 +10,39 @@ from numpy import log10
 
 
 def analyze_perplexities(file):
-    predictor_names, table = read_table(file, 10)
+    predictor_names, table = read_table(file)
     cols = columns(table)
-    predictions = cols[0] + cols[2:]
+    predictions = [col for i, col in enumerate(cols) if i != 1]
+    predictor_names = [name for i, name in enumerate(predictor_names) if i != 1]
     cache_pred = cols[1]
     interpolated_predictions = map(
-        lambda column: interpolated_with_cache_probability(0.1, cache_pred, column),
+        lambda column: interpolated_with_cache_probability(0.10, cache_pred, column),
         predictions
     )
-    perplexities1 = map(predictor_perplexity, cols)
+    perplexities1 = map(predictor_perplexity, predictions)
     perplexities2 = map(predictor_perplexity, interpolated_predictions)
     plot_bars("Perplexity (less is better)", perplexities1, perplexities2, predictor_names)
 
 
-def interpolated_with_cache_probability(cache_lambda, cache_prob, column):
-    return [cache_lambda * cache_prob + (1 - cache_lambda) * field for field in column]
+def interpolated_with_cache_probability(cache_lambda, cache_probs, column):
+    return [cache_lambda * cache_prob + (1 - cache_lambda) * field for cache_prob, field in zip(cache_probs, column)]
 
 
 def plot_bars(ylabel, values, values2, labels):
+    plt.close()
     fig, ax = plt.subplots()
-    # plt.xticks(rotation=-90)
+    plt.xticks(rotation=90)
     ax.set_ylabel(ylabel)
     width = 0.25
     ind = np.arange(len(values))
-    xticks = ind + width
-    ax.set_xticks(xticks)
-    ax.bar(xticks - width / 2, values, width / 2, color='y')
-    ax.bar(xticks + width / 2, values2, width / 2, color='b')
-    ax.set_xticklabels(labels)
+    xticks = ind
+    ax.set_xticks(ind)
+    ax.bar(ind, values, width / 2, color='y')
+    ax.bar(ind, values2, width / 2, color='#808000')
+    ax.set_xticklabels(map(lambda label: label.split("/")[-1], labels))
     plt.xlim(xticks[0] - width, xticks[-1] + width)
+    plt.grid(True)
+    plt.tight_layout()
     plt.show()
 
 
@@ -48,15 +51,15 @@ def predictor_perplexity(predictor_probs):
 
 
 def columns(table):
-    return zip(*table)
+    return map(list, zip(*table))
 
 
-def read_table(file, max_rows=None, separator=u","):
+def read_table(file, separator=u","):
     header = file.readline()[:-1].split(separator)[3:]
     table = []
-    for i in count():
+    while True:
         row = file.readline()[:-1].split(separator)
-        if not row or i > max_rows:
+        if len(row[0]) == 0:
             break
         word_info, probs = row[:3], map(float, row[3:])
 
@@ -68,5 +71,6 @@ def read_table(file, max_rows=None, separator=u","):
 
 
 if __name__ == "__main__":
-    stdin = io.open(sys.stdin.fileno(), "r", encoding="utf-8")
-    analyze_perplexities(stdin)
+    file = io.open("TABLE", "r", encoding="utf-8")
+    # stdin = io.open(sys.stdin.fileno(), "r", encoding="utf-8")
+    analyze_perplexities(file)

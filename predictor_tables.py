@@ -15,7 +15,7 @@ def print_predictor_tables(file):
     predictors = [HumanPredictor(), UnigramCachePredictor()] + \
         map(NgramPredictor, args.ngram_predictor_orders) + \
         [FLM_Specification(flm_model_filename).predictor() for flm_model_filename in args.flm_model_filenames]
-    print_table(file, predictors, prediction_texts)
+    print_table(file, predictors, prediction_texts, debug=args.debug)
 
 
 def argument_parser():
@@ -27,11 +27,11 @@ def argument_parser():
     return parser.parse_args()
 
 
-def print_table(file, predictors, prediction_texts):
+def print_table(file, predictors, prediction_texts, debug=False):
     header = ["#texto", "#palabra", "palabra"] + [predictor.name() for predictor in predictors]
     print_row(file, header)
 
-    for target_word, predictions in izip(prediction_texts.target_words(), predictions_table(predictors, prediction_texts)):
+    for target_word, predictions in izip(prediction_texts.target_words(), predictions_table(predictors, prediction_texts, debug)):
         fields = [target_word.text_index(), target_word.word_index(), target_word.original_word()] + predictions
         print_row(file, fields)
 
@@ -40,8 +40,8 @@ def print_row(file, row, separator=u","):
     file.write(separator.join(map(unicode, row)) + u"\n")
 
 
-def predictions_table(predictors, prediction_texts):
-    return transpose([predictor.batch_predict(prediction_texts) for predictor in predictors])
+def predictions_table(predictors, prediction_texts, debug=False):
+    return transpose([predictor.batch_predict(prediction_texts, debug) for predictor in predictors])
 
 
 def transpose(table):
