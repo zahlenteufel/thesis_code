@@ -12,11 +12,23 @@ from numpy import log10
 
 def analyze_perplexities(file):
     predictor_names, table = read_table(file, 10)
-    perplexities = map(perdictor_perplexity, columns(table))
-    plot_bars("Perplexity", perplexities, predictor_names)
+    cols = columns(table)
+    predictions = cols[0] + cols[2:]
+    cache_pred = cols[1]
+    interpolated_predictions = map(
+        lambda column: interpolated_with_cache_probability(0.1, cache_pred, column),
+        predictions
+    )
+    perplexities1 = map(predictor_perplexity, cols)
+    perplexities2 = map(predictor_perplexity, interpolated_predictions)
+    plot_bars("Perplexity (less is better)", perplexities1, perplexities2, predictor_names)
 
 
-def plot_bars(ylabel, values, labels):
+def interpolated_with_cache_probability(cache_lambda, cache_prob, column):
+    return [cache_lambda * cache_prob + (1 - cache_lambda) * field for field in column]
+
+
+def plot_bars(ylabel, values, values2, labels):
     fig, ax = plt.subplots()
     # plt.xticks(rotation=-90)
     ax.set_ylabel(ylabel)
@@ -24,13 +36,14 @@ def plot_bars(ylabel, values, labels):
     ind = np.arange(len(values))
     xticks = ind + width
     ax.set_xticks(xticks)
-    ax.bar(xticks, values, width / 2, color='y')
+    ax.bar(xticks - width / 2, values, width / 2, color='y')
+    ax.bar(xticks + width / 2, values2, width / 2, color='b')
     ax.set_xticklabels(labels)
     plt.xlim(xticks[0] - width, xticks[-1] + width)
     plt.show()
 
 
-def perdictor_perplexity(predictor_probs):
+def predictor_perplexity(predictor_probs):
     return 10.0 ** -mean(log10(predictor_probs))
 
 
