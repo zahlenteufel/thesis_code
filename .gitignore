@@ -1,5 +1,3 @@
-corpus_quilombo/
-predict_this/
 plots/*
 corpus/spanish_books/*
 corpus/tmp/*
@@ -12,3 +10,4 @@ train_all_models.sh
 *.log
 *.pyc
 venv/
+*.ignore
