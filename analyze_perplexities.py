@@ -71,6 +71,5 @@ def read_table(file, separator=u","):
 
 
 if __name__ == "__main__":
-    file = io.open("TABLE", "r", encoding="utf-8")
-    # stdin = io.open(sys.stdin.fileno(), "r", encoding="utf-8")
+    file = io.open(sys.stdin.fileno(), "r", encoding="utf-8")
     analyze_perplexities(file)
