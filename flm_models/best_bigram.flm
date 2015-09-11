@@ -1,0 +1,14 @@
+1
+W : 4 W(-1) G(-1) N(-1) C(-1) flm_models/best_bigram.count.gz flm_models/best_bigram.lm.gz 12
+W1G1N1C1	W1G1C1	  wbdiscount  gtmin 2  combine mean
+G1N1C1	N1C1	 kndiscount  gtmin 4  combine mean
+W1N1C1	N1C1	 wbdiscount  gtmin 1  combine mean
+W1G1N1	G1N1	 wbdiscount  gtmin 1  combine mean
+G1C1	C1	 wbdiscount  gtmin 1  interpolate
+G1N1	N1	 wbdiscount  gtmin 1  interpolate
+W1C1	C1	 wbdiscount  gtmin 1  interpolate
+W1N1	N1	 wbdiscount  gtmin 1  interpolate
+W1G1	G1	 wbdiscount  gtmin 1  interpolate
+G1	G1	 wbdiscount  gtmin 1  interpolate
+W1	W1	 wbdiscount  gtmin 1  interpolate
+0 	 0 	 wbdiscount gtmin 1
