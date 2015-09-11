@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import subprocess
 import more_itertools
 
@@ -14,9 +15,15 @@ def call_freeling(text):
         "-f", "/usr/local/share/freeling/config/es.cfg",
         "--nortk",
         "--nortkcon",
+        "--nonumb",
+        "--nocoref",
+        "--noorto",
+        "--nodate",
+        "--noloc",
         "--flush"],
         stdout=subprocess.PIPE,
         stdin=subprocess.PIPE)
+    assert u"¿" not in text and u"¡" not in text
     p.stdin.write(text.encode("utf-8"))
     result = p.communicate()[0].decode("utf-8")
     p.stdin.close()
