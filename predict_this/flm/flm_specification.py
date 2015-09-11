@@ -37,9 +37,10 @@ class FLM_Specification:
             node[style="filled", fillcolor="white", shape="circle", size="30,30", fixedsize=true]
             """
         n = self.order()
+        factors = list(self.factors() - {"W"}) + ["W"] # force W to be allways at the end
         for i in xrange(n):
             x = (n - i) * 100
-            for j, factor in enumerate(self.factors()):
+            for j, factor in enumerate(factors):
                 y = (len(self.factors()) - j) * 100
                 s += '%s%d [pos="%d,%d", label="%s%s"%s];\n' % (
                     factor.lower(),

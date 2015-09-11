@@ -1,3 +1,5 @@
+import re
+
 
 class BackoffGraph():
 
@@ -14,8 +16,8 @@ class BackoffGraph():
         if line.strip().split()[:2] == ["0", "0"]:
             return
         node_list, dropped_elements = line.split()[:2]
-        node = make_node(node_list.split(","))
-        dropped_elements = dropped_elements.split(",")
+        node = make_node(parse_factors_list(node_list.replace(",", "")))
+        dropped_elements = parse_factors_list(dropped_elements.replace(",", ""))
         for dropped_element in dropped_elements:
             new_node = take_out(node, dropped_element)
             self.nodes.add(new_node)
@@ -46,3 +48,7 @@ def make_node(elements):
 def take_out(node, element):
     node_elements = node.split(",")
     return make_node(e for e in node_elements if e != element)
+
+
+def parse_factors_list(string):
+    return map(lambda (x, y): x + y, re.findall(r"([A-Z]+)([0-9]+)", string))

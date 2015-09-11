@@ -18,7 +18,7 @@ with tempfile.NamedTemporaryFile() as dot:
     dot.flush()
     os.system("dot %s -Tpng > out.png_2" % dot.name)
 
-os.system("convert -append out.png_1 out.png_2 out.png")
+os.system("convert +append out.png_1 out.png_2 out.png")
 os.system("feh out.png")
 os.unlink("out.png_1")
 os.unlink("out.png_2")
