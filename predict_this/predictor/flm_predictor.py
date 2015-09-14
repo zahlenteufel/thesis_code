@@ -44,6 +44,7 @@ def call_fngram(factor_file, text_file):
         "-debug", "2",
         "-unk",
         "-no-virtual-begin-sentence",
+        "-no-null",
         "-no-virtual-end-sentence",
         "-no-score-sentence-marks",
         "-ppl", text_file],
