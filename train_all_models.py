@@ -63,7 +63,7 @@ with open("train_all_models.sh", "w") as training_script:
             any_training_necessary = True
             assert flm_spec.factors() <= {"W", "G", "N", "C", "P", "L"}, " must use common factors only.. (%s)" % flm_spec.model_file()
             print >>training_script, "echo \"$(date): training %s\" | tee -a %s" % (flm_model_filename, LOG_FILENAME)
-            print >>training_script, "fngram-count -factor-file %s -no-virtual-end-sentence -unk -lm -write-counts -text %s" % \
+            print >>training_script, "fngram-count -factor-file %s -no-virtual-begin-sentence -nonull -no-virtual-end-sentence -unk -lm -write-counts -no-add-end-sentence-token -text %s" % \
                 (flm_model_filename, FACTORED_CORPUS_FILE)
 
     if any_training_necessary:
