@@ -1,0 +1,6 @@
+1
+W :  2 W(-1) N(-1) flm_models/best_bigramWN.count.gz flm_models/best_bigramWN.lm.gz 4
+W1N1	W1N1	  wbdiscount  gtmin 2  combine mean
+N1	N1	 kndiscount  gtmin 5  interpolate
+W1	W1	 wbdiscount  gtmin 1  interpolate
+0 	 0 	 wbdiscount gtmin 1

@@ -11,3 +11,5 @@ train_all_models.sh
 *.pyc
 venv/
 *.ignore
+corpus/*gram.lm.gz
+corpus/factored_corpus_WGNCPL.txt
