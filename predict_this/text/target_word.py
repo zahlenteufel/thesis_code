@@ -1,7 +1,5 @@
 from word import Word
 from word import to_ascii
-from numpy import mean
-from numpy import log10
 
 
 class TargetWord(Word):
@@ -14,6 +12,15 @@ class TargetWord(Word):
     def cloze_prob(self):
         "empirical frequency, normalized to avoid probabilities 0 and 1"
         return self._cloze_prob(self.in_ascii())
+
+    def completed_words(self):
+        return self._completed_words
+
+    def was_not_guessed(self):
+        return self.in_ascii() not in self.completed_words()
+
+    def everyone_guessed(self):
+        return self.completed_words().count(self.in_ascii()) == len(self.completed_words())
 
     def _cloze_prob(self, word):
         count = self._completed_words.count(word)
