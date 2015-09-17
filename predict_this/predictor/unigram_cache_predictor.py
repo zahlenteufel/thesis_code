@@ -33,4 +33,4 @@ class UnigramCache:
         self.total += 1
 
     def prob(self, word):
-        return self.histogram.get(word, 1) / float(self.total+1)
+        return self.histogram.get(word, 1) / float(self.total + 1)

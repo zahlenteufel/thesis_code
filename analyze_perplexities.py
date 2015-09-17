@@ -27,6 +27,7 @@ def analyze_perplexities(file, in_terminal):
     else:
         plot_bars("Perplexity (less is better)", perplexities1, perplexities2, predictor_names)
 
+
 def print_preplexities(perplexities1, perplexities_with_cache, predictor_names):
     print "%s\t%s\t%s" % ("predictor name".rjust(25), "perplexity", "perplexity with cache")
     for ppl, pp_cache, predictor_name in izip(perplexities1, perplexities_with_cache, predictor_names):

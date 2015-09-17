@@ -12,7 +12,7 @@ class FLM_Specification:
             lines = ifilter(
                 _not(is_comment),
                 imap(str.strip, file)
-                )
+            )
             assert lines.next() == "1", "there must be only one model declaration in file"
             header = lines.next()
             self.parse_header(header)
@@ -37,7 +37,7 @@ class FLM_Specification:
             node[style="filled", fillcolor="white", shape="circle", size="30,30", fixedsize=true]
             """
         n = self.order()
-        factors = list(self.factors() - {"W"}) + ["W"] # force W to be allways at the end
+        factors = list(self.factors() - {"W"}) + ["W"]  # force W to be allways at the end
         for i in xrange(n):
             x = (n - i) * 100
             for j, factor in enumerate(factors):
@@ -50,7 +50,7 @@ class FLM_Specification:
                     factor,
                     ("-%d" % i) if i > 0 else "",
                     ', fillcolor="gray"' if factor == "W" else ""
-                    )
+                )
         for parent in self.backoff_graph.parents:
             s += parent.lower() + " -> w0;\n"
         s += "}\n"
