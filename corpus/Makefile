@@ -20,6 +20,7 @@ clean:
 
 tmp/1_joined_texts.txt:
 	$(call log, joining texts)
+	mkdir -p tmp
 	find spanish_books -type f -print0 -name "*" | \
 		sort -z | \
 		xargs -0 cat -- > \
