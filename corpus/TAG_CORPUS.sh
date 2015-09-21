@@ -5,7 +5,7 @@
 [ ! -d chunks ] && mkdir chunks
 [ ! -d tagged_chunks ] && mkdir tagged_chunks
 
-split --number=l/10000 -d tmp/corpus_cleaned.txt chunks/
+split --number=l/10000 -d corpus_cleaned.txt chunks/
 
 analyze_es="analyze -f /usr/local/share/freeling/config/es.cfg"
 
@@ -28,6 +28,6 @@ echo $(date): converting to ascii
 
 echo $(date): concatenating files
 
-find tagged_corpus/ -type f -print0 -name "*.ascii" | sort -z | xargs -0 cat -- > factored_corpus_WGNCP.txt
+find tagged_chunks/ -type f -print0 -name "*.ascii" | sort -z | xargs -0 cat -- > factored_corpus_WGNCP.txt
 
 echo $(date): finished 

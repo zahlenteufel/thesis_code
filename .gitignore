@@ -13,3 +13,4 @@ venv/
 *.ignore
 corpus/*gram.lm.gz
 corpus/factored_corpus_WGNCPL.txt
+corpus/corpus_cleaned.txt
