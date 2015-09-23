@@ -26,8 +26,8 @@ echo $(date): converting to ascii
 
 (cd .. ; python convert_to_ascii.py)
 
-echo $(date): concatenating files
+#echo $(date): concatenating files
 
-find tagged_chunks/ -type f -print0 -name "*.ascii" | sort -z | xargs -0 cat -- > factored_corpus_WGNCP.txt
+#find tagged_chunks/ -type f -print0 -name "*.ascii" | sort -z | xargs -0 cat -- > factored_corpus_WGNCP.txt
 
 echo $(date): finished 

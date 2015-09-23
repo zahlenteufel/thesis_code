@@ -2,4 +2,4 @@
 ##
 ## not for training, just used for creating a specification that uses WGNCP, to build the corpus
 ##
-W : 5 G(-1) N(-1) C(-1) P(-1) bla.txt bla.txt 0
+W : 5 G(-1) N(-1) C(-1) P(-1) L(-1) bla.txt bla.txt 0
