@@ -4,7 +4,7 @@ from unidecode import unidecode
 
 class Word:
 
-    def __init__(self, word, lemma, category_code, text_index, word_index):
+    def __init__(self, word, lemma, category_code, text_index=-1, word_index=-1):
         self._word = word
         self._lemma = to_ascii(lemma)
         self._category_code = category_code.upper()

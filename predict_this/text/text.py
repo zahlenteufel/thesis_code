@@ -20,7 +20,7 @@ class Text:
     @classmethod
     def from_tagged_lines(self, tagged_lines):
         lines = [
-            [Word(word, category_code) for word, _, category_code in tagged_line]
+            [Word(word, lemma, category_code) for word, lemma, category_code in tagged_line]
             for tagged_line in tagged_lines
         ]
         return Text()._initialize_with_lines(lines)

@@ -54,4 +54,7 @@ def parse_freeling_line(line):
 
 def expand(tagged_word):
     word, lemma, description = tagged_word
-    return [(subword, lemma, description) for subword in word.split("_")]
+    return [
+        (subword, sublemma.split("+")[0], description) for
+        subword, sublemma in zip(word.split("_"), lemma.split("_"))
+    ]
