@@ -65,7 +65,8 @@ class FLM_Specification:
     def extract_factors(self, tagged_word):
         category_code = tagged_word.category_code()
         info = reduce(extend, map(lambda c: parse_category_brief(c), category_code.split("+")), {})
-        info["L"] = tagged_word.lemma()
+        if tagged_word.in_ascii() != "<s>":
+            info["L"] = tagged_word.lemma()
         return ["%s-%s" % (key, value) for key, value in info.iteritems() if key in self.factors()]
 
     def predictor(self):
