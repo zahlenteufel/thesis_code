@@ -19,6 +19,8 @@ def call_freeling(text):
         "--nocoref",
         "--noorto",
         "--nodate",
+        "--nophon",
+        "--noner",
         "--noloc",
         "--flush"],
         stdout=subprocess.PIPE,
@@ -33,28 +35,19 @@ def call_freeling(text):
 def analyze_freeling_output(freeling_output):
     freeling_lines = more_itertools.peekable(freeling_output.split("\n"))
     while freeling_lines.peek():
-        s = get_tagged_words(freeling_lines)
-        yield s
+        yield list(get_tagged_line(freeling_lines))
 
 
-def get_tagged_words(freeling_output_line_peekable_iterator):
-    result = []
+def get_tagged_line(freeling_output_line_peekable_iterator):
     while freeling_output_line_peekable_iterator.peek():
         line = freeling_output_line_peekable_iterator.next()
         if line == "":
             break
-        result += expand(parse_freeling_line(line))
+        word, lemma, description = parse_freeling_line(line)
+        yield word, lemma.split("+")[0], description
     freeling_output_line_peekable_iterator.next()
-    return result
 
 
 def parse_freeling_line(line):
+    assert "_" not in line
     return line.split()[:3]
-
-
-def expand(tagged_word):
-    word, lemma, description = tagged_word
-    return [
-        (subword, sublemma.split("+")[0], description) for
-        subword, sublemma in zip(word.split("_"), lemma.split("_"))
-    ]
