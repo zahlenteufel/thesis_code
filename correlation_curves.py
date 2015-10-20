@@ -77,7 +77,7 @@ def parse_arguments():
 def plot_cache_corr_function_versus_content():
     cache_lambdas = map(lambda x: x / 1000.0, xrange(1000))
     function_corrs = correlation_curve_cache(texts, FUNCTION_CATEGORIES, 4, cache_lambdas)
-    content_corrs = correlation_curve_cache(texts, CONTENT_CATEGORIES, 4, cache_lambdas) 
+    content_corrs = correlation_curve_cache(texts, CONTENT_CATEGORIES, 4, cache_lambdas)
 
     print "max in function corrs", cache_lambdas[function_corrs.index(max(function_corrs))]
     print "max in content corrs", cache_lambdas[content_corrs.index(max(content_corrs))]
