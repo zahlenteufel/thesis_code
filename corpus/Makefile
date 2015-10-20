@@ -5,9 +5,9 @@ log=@echo "$(ccyellow)$(shell date): $(1)$(ccend)"
 # error=rm -f $@
 # ; @echo "$(ccred)$(shell date): ERROR! $(ccend)")
 
-all: corpus_cleaned.txt
+all: corpus_cleaned_normalized.txt
 
-.DELETE_ON_ERROR: tmp/1_joined_texts.txt tmp/2_cleaned_characters.txt tmp/3_abreviaturas_fixed.txt tmp/4_fixed_broken_words.txt tmp/5_removed_emails_and_blanks.txt tmp/6_removed_parenthesis.txt corpus_cleaned.txt
+.DELETE_ON_ERROR: tmp/1_joined_texts.txt tmp/2_cleaned_characters.txt tmp/3_abreviaturas_fixed.txt tmp/4_fixed_broken_words.txt tmp/5_removed_emails_and_blanks.txt tmp/6_removed_parenthesis.txt corpus_cleaned.txt corpus_cleaned_normalized.txt
 
 .PHONY: clean all
 clean:
@@ -49,6 +49,10 @@ tmp/6_removed_parenthesis.txt: tmp/5_removed_emails_and_blanks.txt
 corpus_cleaned.txt: tmp/6_removed_parenthesis.txt
 	$(call log, delete lines with weird characters)
 	./delete_lines_with_weird_characters.sh $< $@
+
+corpus_cleaned_normalized.txt: corpus_cleaned.txt
+	$(call log, normalize corpus)
+	cd .. && python normalize_corpus.py
 
 # # factored_corpus_WGNCP.txt: tmp/corpus_cleaned.txt
 

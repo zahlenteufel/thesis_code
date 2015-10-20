@@ -8,10 +8,9 @@ from predictor import Predictor
 
 class NgramPredictor(Predictor):
 
-    def __init__(self, order, skip=False):
-        self.skip = skip
+    def __init__(self, order):
         self.order = order
-        self._name = "%s%dgram" % ("skip" if skip else "", order)
+        self._name = "%dgram" % order
         self.model_file = "corpus/%s.lm.gz" % self._name
 
     def batch_predict(self, prediction_text, debug=False):

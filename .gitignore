@@ -14,3 +14,4 @@ venv/
 corpus/*gram.lm.gz
 corpus/factored_corpus_WGNCPL.txt
 corpus/corpus_cleaned.txt
+corpus/corpus_cleaned_normalized.txt
