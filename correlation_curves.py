@@ -86,7 +86,7 @@ def plot_cache_corr_function_versus_content():
     plt.ylabel("Correlacion de logit 4-gram y logit cloze variando cache lambda")
     plt.grid(True)
     plt.plot(cache_lambdas, function_corrs, "r-", label="function")
-    plt.plot(cache_lambdas, content_corrs, "g:", label="content")
+    plt.plot(cache_lambdas, content_corrs, "g-", label="content")
     plt.show()
 
 
