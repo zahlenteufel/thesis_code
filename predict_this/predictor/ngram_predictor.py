@@ -26,7 +26,7 @@ class NgramPredictor(Predictor):
         # ESCAPE_SEQ = "--xx--"
         for i in xrange(0, len(targets), chunk_size):
             chunk_targets = targets[i:min(len(targets), i + chunk_size)]
-            with NamedTemporaryFile(delete=False) as f:
+            with NamedTemporaryFile() as f:
                 for target in chunk_targets:
                     context = map(self.normalize, target.context())
                     for word in vocabulary:
@@ -48,7 +48,7 @@ class NgramPredictor(Predictor):
                 ngram_output = p.communicate()[0]
                 logprobs = parse_ngram_output(len(chunk_targets) * len(vocabulary), ngram_output)
                 for i in xrange(0, len(logprobs), len(vocabulary)):
-                    ent = calculate_entropy(logprobs[i:(i+len(vocabulary))])
+                    ent = calculate_entropy(logprobs[i:(i + len(vocabulary))])
                     result.append(ent)
         return result
 
