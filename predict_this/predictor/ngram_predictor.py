@@ -41,7 +41,7 @@ class NgramPredictor(Predictor):
                 "-no-eos",
                 "-no-sos",
                 "-ppl", f.name],
-            stdout=subprocess.PIPE)
+                stdout=subprocess.PIPE)
             ngram_output = p.communicate()[0]
             logprobs = parse_ngram_output(len(vocabulary), ngram_output)
             ent = calculate_entropy(logprobs)
