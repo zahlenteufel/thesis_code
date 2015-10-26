@@ -20,34 +20,36 @@ class NgramPredictor(Predictor):
     def batch_entropy(self, prediction_text):
         vocabulary = self.vocabulary()
         targets = prediction_text.target_words()
+        number_of_chunks = 10
+        chunk_size = len(targets) / number_of_chunks
         result = []
-        ESCAPE_SEQ = "--xx--"
-        with NamedTemporaryFile(delete=False) as f:
-            print "file=", f.name
-            for index, target in enumerate(targets):
-                context = map(self.normalize, target.context())
-                for word in vocabulary:
-                    print >>f, " ".join(saturated_last(self.order, context + [word]))
-                print >>f, ESCAPE_SEQ
-                print 100 * index / float(len(targets))
-            f.flush()
+        # ESCAPE_SEQ = "--xx--"
+        for i in xrange(0, len(targets), chunk_size):
+            chunk_targets = targets[i:min(len(targets), i + chunk_size)]
+            with NamedTemporaryFile(delete=False) as f:
+                for target in chunk_targets:
+                    context = map(self.normalize, target.context())
+                    for word in vocabulary:
+                        print >>f, " ".join(saturated_last(self.order, context + [word]))
+                    # print >>f, ESCAPE_SEQ
+                f.flush()
 
-            p = subprocess.Popen([
-                "ngram",
-                "-order", str(self.order),
-                "-lm", self.model_file,
-                "-debug", "2",
-                "-unk",
-                "-escape", ESCAPE_SEQ,
-                "-no-eos",
-                "-no-sos",
-                "-ppl", f.name],
-                stdout=subprocess.PIPE)
-            ngram_output = p.communicate()[0]
-            logprobs = parse_ngram_output(len(vocabulary), ngram_output)
-            ent = calculate_entropy(logprobs)
-            result.append(ent)
-            print ent
+                p = subprocess.Popen([
+                    "ngram",
+                    "-order", str(self.order),
+                    "-lm", self.model_file,
+                    "-debug", "2",
+                    "-unk",
+                    # "-escape", ESCAPE_SEQ,
+                    "-no-eos",
+                    "-no-sos",
+                    "-ppl", f.name],
+                    stdout=subprocess.PIPE)
+                ngram_output = p.communicate()[0]
+                logprobs = parse_ngram_output(len(chunk_targets) * len(vocabulary), ngram_output)
+                for i in xrange(0, len(logprobs), len(vocabulary)):
+                    ent = calculate_entropy(logprobs[i:(i+len(vocabulary))])
+                    result.append(ent)
         return result
 
     def vocabulary(self):
