@@ -1,5 +1,6 @@
 from word import Word
 from word import to_ascii
+from math import log10
 
 
 class TargetWord(Word):
@@ -21,6 +22,17 @@ class TargetWord(Word):
 
     def everyone_guessed(self):
         return self.completed_words().count(self.in_ascii()) == len(self.completed_words())
+
+    def unnormalized_pcloze_prob(self, word):
+        count = self._completed_words.count(word)
+        n = len(self._completed_words)
+        return count / float(n)
+
+    def cloze_entropy(self):
+        return sum(
+            self.unnormalized_pcloze_prob(w) * log10(self.unnormalized_pcloze_prob(w))
+            for w in set(self._completed_words)
+        )
 
     def _cloze_prob(self, word):
         count = self._completed_words.count(word)

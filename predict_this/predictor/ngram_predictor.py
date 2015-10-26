@@ -16,6 +16,42 @@ class NgramPredictor(Predictor):
     def batch_predict(self, prediction_text, debug=False):
         return self.logprobs(self.ngrams(prediction_text), debug)
 
+    def batch_entropy(self, prediction_text):
+        vocabulary = self.vocabulary()
+        targets = prediction_text.target_words()
+        result = []
+        ESCAPE_SEQ = "--xx--"
+        with NamedTemporaryFile(delete=False) as f:
+            print "file=", f.name
+            for index, target in enumerate(targets):
+                context = map(self.normalize, target.context())
+                for word in vocabulary:
+                    print >>f, " ".join(context + [word])
+                print >>f, ESCAPE_SEQ
+                # print index
+            f.flush()
+
+            p = subprocess.Popen([
+                "ngram",
+                "-order", str(self.order),
+                "-lm", self.model_file,
+                "-debug", "2",
+                "-unk",
+                "-escape", ESCAPE_SEQ,
+                "-no-eos",
+                "-no-sos",
+                "-ppl", f.name],
+            stdout=subprocess.PIPE)
+            ngram_output = p.communicate()[0]
+            logprobs = parse_ngram_output(len(vocabulary), ngram_output)
+            ent = calculate_entropy(logprobs)
+            result.append(ent)
+            print ent
+        return result
+
+    def vocabulary(self):
+        return set(map(lambda l: l.rstrip("\n"), open("corpus/vocabulary.txt")))
+
     def normalize(self, word):
         return word.in_ascii()
 
@@ -63,3 +99,10 @@ def parse_ngram_output(ngrams_len, ngram_output):
         res.append(last_prob)
         lines.next()
     return res
+
+
+def calculate_entropy(logprobs):
+    return -sum(
+        map(lambda lp: lp * pow(10.0, lp),
+            logprobs)
+        )
