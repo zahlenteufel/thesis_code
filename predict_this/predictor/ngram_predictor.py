@@ -102,7 +102,4 @@ def parse_ngram_output(ngrams_len, ngram_output):
 
 
 def calculate_entropy(logprobs):
-    return -sum(
-        map(lambda lp: lp * pow(10.0, lp),
-            logprobs)
-        )
+    return -sum(map(lambda lp: lp * pow(10.0, lp), logprobs))
