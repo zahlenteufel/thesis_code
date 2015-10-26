@@ -4,6 +4,7 @@ import subprocess
 from more_itertools import peekable
 from tempfile import NamedTemporaryFile
 from predictor import Predictor
+from predictor import saturated_last
 
 
 class NgramPredictor(Predictor):
@@ -26,9 +27,9 @@ class NgramPredictor(Predictor):
             for index, target in enumerate(targets):
                 context = map(self.normalize, target.context())
                 for word in vocabulary:
-                    print >>f, " ".join(context + [word])
+                    print >>f, " ".join(saturated_last(self.order, context + [word]))
                 print >>f, ESCAPE_SEQ
-                # print index
+                print 100 * index / float(len(targets))
             f.flush()
 
             p = subprocess.Popen([
