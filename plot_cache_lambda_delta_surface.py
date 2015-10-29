@@ -15,7 +15,7 @@ surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm, linewidt
 
 fig.colorbar(surf, shrink=0.5, aspect=5)
 
-ax.set_xlabel("$\delta$")
-ax.set_ylabel("$\lambda$")
+ax.set_xlabel("$\lambda$")
+ax.set_ylabel("$\delta$")
 
 plt.show()
