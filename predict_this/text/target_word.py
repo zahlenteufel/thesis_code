@@ -29,7 +29,7 @@ class TargetWord(Word):
         return count / float(n)
 
     def cloze_entropy(self):
-        return sum(
+        return -sum(
             self.unnormalized_pcloze_prob(w) * log10(self.unnormalized_pcloze_prob(w))
             for w in set(self._completed_words)
         )

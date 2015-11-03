@@ -19,6 +19,7 @@ class UnigramCachePredictor:
         return probs
 
     def batch_entropy(self, prediction_texts):
+        # dummy values..
         return [0] * len(prediction_texts.target_words())
 
     def name(self):
