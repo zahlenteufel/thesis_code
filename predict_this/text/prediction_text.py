@@ -4,6 +4,8 @@ from target_word import TargetWord
 from word import Word
 import os
 
+from ..category.category import parse_category_brief
+
 
 class PredictionText:
     """
@@ -11,7 +13,8 @@ class PredictionText:
     'holes' (TargetWords) on it that people have to guess.
     """
 
-    def __init__(self, text_index):
+    def __init__(self, text_index, filter_by=None):
+        self.filter_by = filter_by
         assert(text_index in [1, 2, 3, 4, 5, 7, 8])
         with open(os.path.dirname(os.path.realpath(__file__)) + "/texts1234578.csv", "r") as csvfile:
             reader = UnicodeDictReader(csvfile, delimiter=',')
@@ -22,7 +25,11 @@ class PredictionText:
         return self._lines
 
     def target_words(self):
-        return [word for line in self.lines() for word in line if word.is_target()]
+        return [
+            word for line in self.lines() for word in line
+            if word.is_target() and
+            (self.filter_by is None or parse_category_brief(word.category_code())["C"] in self.filter_by)
+        ]
 
 
 class TextBuilder:

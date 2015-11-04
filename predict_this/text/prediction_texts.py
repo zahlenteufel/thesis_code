@@ -4,8 +4,8 @@ from itertools import chain
 
 class PredictionTexts:
 
-    def __init__(self, text_indexes):
-        self._prediction_texts = map(PredictionText, text_indexes)
+    def __init__(self, text_indexes, filter_by=None):
+        self._prediction_texts = [PredictionText(i, filter_by) for i in text_indexes]
         self._lines = flatten(t.lines() for t in self._prediction_texts)
 
     def lines(self):

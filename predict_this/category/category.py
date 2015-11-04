@@ -4,7 +4,7 @@ from categories_es import CATEGORIES_ES
 categories = CATEGORIES_ES["categories"]
 
 ALL_CATEGORIES = categories.keys()
-FUNCTION_CATEGORIES = ["D", "C", "M", "T", "S", "P"]
+FUNCTION_CATEGORIES = ["D", "C", "M", "T", "SP", "P"]
 CONTENT_CATEGORIES = ["A", "N", "V"]
 
 

@@ -6,10 +6,10 @@ from predict_this.predictor.ngram_predictor import NgramPredictor
 from predict_this.predictor.human_predictor import HumanPredictor
 from predict_this.predictor.unigram_cache_predictor import UnigramCachePredictor
 from predict_this.text.prediction_texts import PredictionTexts
-from predict_this.category.category import parse_category_brief, ALL_CATEGORIES, FUNCTION_CATEGORIES, CONTENT_CATEGORIES
+from predict_this.category.category import ALL_CATEGORIES, FUNCTION_CATEGORIES, CONTENT_CATEGORIES
 
 
-def correlation_curve_ngrams(texts, filter_categories, ngram_orders):
+def correlation_curve_ngrams(texts, ngram_orders):
     corrs = []
     targets = texts.target_words()
     cloze_probs = HumanPredictor().batch_predict(texts)
@@ -21,9 +21,8 @@ def correlation_curve_ngrams(texts, filter_categories, ngram_orders):
         ngram_probs = NgramPredictor(order).batch_predict(texts)
 
         for target, cloze_prob, ngram_prob in zip(targets, cloze_probs, ngram_probs):
-            if parse_category_brief(target.category_code())["C"] in filter_categories:
-                x.append(cloze_prob)
-                y.append(ngram_prob)
+            x.append(cloze_prob)
+            y.append(ngram_prob)
 
         lx = logit(x)
         ly = logit(y)
@@ -32,7 +31,7 @@ def correlation_curve_ngrams(texts, filter_categories, ngram_orders):
     return corrs
 
 
-def correlation_curve_cache(texts, filter_categories, ngram_order, cache_lambdas):
+def correlation_curve_cache(texts, ngram_order, cache_lambdas):
     corrs = []
     targets = texts.target_words()
     cloze_probs = HumanPredictor().batch_predict(texts)
@@ -45,9 +44,8 @@ def correlation_curve_cache(texts, filter_categories, ngram_order, cache_lambdas
         cache_probs = UnigramCachePredictor().batch_predict(texts)
 
         for target, cloze_prob, ngram_prob, cache_prob in zip(targets, cloze_probs, ngram_probs, cache_probs):
-            if parse_category_brief(target.category_code())["C"] in filter_categories:
-                x.append(cloze_prob)
-                y.append(cache_lambda * cache_prob + (1 - cache_lambda) * ngram_prob)
+            x.append(cloze_prob)
+            y.append(cache_lambda * cache_prob + (1 - cache_lambda) * ngram_prob)
 
         lx = logit(x)
         ly = logit(y)
@@ -74,27 +72,27 @@ def parse_arguments():
     return args.text_numbers, args.orders, categories
 
 
-def plot_cache_corr_function_versus_content():
-    cache_lambdas = map(lambda x: x / 1000.0, xrange(1000))
-    function_corrs = correlation_curve_cache(texts, FUNCTION_CATEGORIES, 4, cache_lambdas)
-    content_corrs = correlation_curve_cache(texts, CONTENT_CATEGORIES, 4, cache_lambdas)
+# def plot_cache_corr_function_versus_content():
+#     cache_lambdas = map(lambda x: x / 1000.0, xrange(1000))
+#     function_corrs = correlation_curve_cache(texts, FUNCTION_CATEGORIES, 4, cache_lambdas)
+#     content_corrs = correlation_curve_cache(texts, CONTENT_CATEGORIES, 4, cache_lambdas)
 
-    print "max in function corrs", cache_lambdas[function_corrs.index(max(function_corrs))]
-    print "max in content corrs", cache_lambdas[content_corrs.index(max(content_corrs))]
+#     print "max in function corrs", cache_lambdas[function_corrs.index(max(function_corrs))]
+#     print "max in content corrs", cache_lambdas[content_corrs.index(max(content_corrs))]
 
-    plt.xlabel("cache_lambda")
-    plt.ylabel("Correlacion de logit 4-gram y logit cloze variando cache lambda")
-    plt.grid(True)
-    plt.plot(cache_lambdas, function_corrs, "r-", label="function")
-    plt.plot(cache_lambdas, content_corrs, "g-", label="content")
-    plt.show()
+#     plt.xlabel("cache_lambda")
+#     plt.ylabel("Correlacion de logit 4-gram y logit cloze variando cache lambda")
+#     plt.grid(True)
+#     plt.plot(cache_lambdas, function_corrs, "r-", label="function")
+#     plt.plot(cache_lambdas, content_corrs, "g-", label="content")
+#     plt.show()
 
 
 if __name__ == "__main__":
     text_numbers, orders, categories = parse_arguments()
 
-    texts = PredictionTexts(text_numbers)
-    corrs = correlation_curve_ngrams(texts, categories, orders)
+    texts = PredictionTexts(text_numbers, filter_by=categories)
+    corrs = correlation_curve_ngrams(texts, orders)
 
     plt.xlabel("orden")
     plt.ylabel("Correlacion de logit n-gram y logit cloze")
@@ -102,4 +100,4 @@ if __name__ == "__main__":
     plt.plot(orders, corrs, "r+-")
     plt.show()
 
-    plot_cache_corr_function_versus_content()
+    # plot_cache_corr_function_versus_content()
