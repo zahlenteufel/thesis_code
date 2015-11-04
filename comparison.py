@@ -63,6 +63,7 @@ def plot(x, y, lx, ly, order):
     plt.savefig("plots/%s%d.png" % (args.prefix, order))
     plt.close()
 
+
 for order in args.orders:
     x = []
     y = []

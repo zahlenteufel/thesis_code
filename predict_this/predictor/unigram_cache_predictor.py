@@ -1,6 +1,9 @@
 
 class UnigramCachePredictor:
 
+    def __init__(self, delta=0.0002):
+        self.delta = delta
+
     def batch_predict(self, prediction_texts, debug=False):
         """predict all the tagged words in the prediction text,
         i.e. return a list of the probabilities for each word in the lm"""
@@ -14,7 +17,7 @@ class UnigramCachePredictor:
                     current_prediction_text = word.text_index()
                     cache = UnigramCache()
                 if word.is_target():
-                    probs.append(cache.prob(w))
+                    probs.append(cache.prob(w, self.delta))
                 cache.add(w)
         return probs
 
@@ -36,5 +39,8 @@ class UnigramCache:
         self.histogram[word] = self.histogram.get(word, 0) + 1
         self.total += 1
 
-    def prob(self, word):
-        return self.histogram.get(word, 1) / float(self.total + 1)
+    def prob(self, word, delta):
+        count = float(self.histogram.get(word, 1))
+        total = float(self.total)
+        vocabulary = float(len(self.histogram) + 1)  # + 1 for the <unk>
+        return (count + delta) / (total + delta * vocabulary)

@@ -10,9 +10,9 @@ class TargetWord(Word):
         self._context = context
         self._completed_words = map(to_ascii, completed_words)
 
-    def cloze_prob(self):
+    def cloze_prob(self, delta):
         "empirical frequency, normalized to avoid probabilities 0 and 1"
-        return self._cloze_prob(self.in_ascii())
+        return self._cloze_prob(self.in_ascii(), delta)
 
     def completed_words(self):
         return self._completed_words
@@ -23,32 +23,26 @@ class TargetWord(Word):
     def everyone_guessed(self):
         return self.completed_words().count(self.in_ascii()) == len(self.completed_words())
 
-    def unnormalized_pcloze_prob(self, word):
-        count = self._completed_words.count(word)
-        n = len(self._completed_words)
-        return count / float(n)
+    def cloze_entropy(self, delta):
+        return -sum([self._cloze_prob(w, delta) * log10(self._cloze_prob(w, delta)) for w in self._completed_words])
 
-    def cloze_entropy(self):
-        return -sum(
-            self.unnormalized_pcloze_prob(w) * log10(self.unnormalized_pcloze_prob(w))
-            for w in set(self._completed_words)
-        )
-
-    def _cloze_prob(self, word):
-        count = self._completed_words.count(word)
-        n = len(self._completed_words)
-        if count == 0:
-            return 1 / float(n + 1)
-        elif count == n:
-            return n / float(n + 1)
-        else:
-            return count / float(n + 1)
+    def _cloze_prob(self, word, delta):
+        """Calculates the cloze probability from the completed words,
+        using delta as smoothing parameter.
+        """
+        count = float(self._completed_words.count(word))
+        total_answers = float(len(self.completed_words()))
+        different_answers = float(len(set(self.completed_words())) + 1)
+        return (count + delta) / (total_answers + delta * different_answers)
 
     def context(self):
         return self._context
 
     def is_target(self):
         return True
+
+    def __repr__(self):
+        return "[ %s (%s)]" % (self.in_ascii(), ",".join(self.completed_words()))
 
     @staticmethod
     def from_csv_row(row, current_line):
