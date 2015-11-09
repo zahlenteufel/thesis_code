@@ -9,10 +9,10 @@ from predictor import saturated_last
 
 class NgramPredictor(Predictor):
 
-    def __init__(self, order):
+    def __init__(self, ngram_lm, order):
         self.order = order
         self._name = "%dgram" % order
-        self.model_file = "corpus/%s.lm.gz" % self._name
+        self.model_file = ngram_lm or "corpus/%s.lm.gz" % self._name
 
     def batch_predict(self, prediction_text, debug=False):
         return self.logprobs(self.ngrams(prediction_text), debug)

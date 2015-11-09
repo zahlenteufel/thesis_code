@@ -9,10 +9,10 @@ from itertools import izip
 import argparse
 
 
-def print_predictor_tables(file, text_numbers, ngram_predictor_orders, entropy, flm_model_filenames, debug):
+def print_predictor_tables(file, text_numbers, ngram_lm, ngram_predictor_orders, entropy, flm_model_filenames, debug):
     prediction_texts = PredictionTexts(text_numbers)
-    predictors = [HumanPredictor(), UnigramCachePredictor()] + \
-        map(NgramPredictor, ngram_predictor_orders) + \
+    predictors = [HumanPredictor(), UnigramCachePredictor()]
+        map(lambda order: NgramPredictor(ngram_lm=ngram_lm, order=order), ngram_predictor_orders) + \
         [FLM_Specification(flm_model_filename).predictor() for flm_model_filename in flm_model_filenames]
     print_table(file, predictors, prediction_texts, entropy, debug)
 
@@ -21,6 +21,7 @@ def argument_parser():
     parser = argparse.ArgumentParser(description="Output table with the probabilities given by the predictors")
     parser.add_argument("-text_numbers", type=int, nargs="+", default=[1, 2, 3, 4, 5, 7, 8], help="numbers in [1,2,3,4,5,7,8]")
     parser.add_argument("-ngram_predictor_orders", type=int, nargs="*", default=[])
+    parser.add_argument("-ngram_lm", default="")
     parser.add_argument("-entropy", type=bool, default=False)
     parser.add_argument("-flm_model_filenames", nargs="*", default=[])
     parser.add_argument("-debug", type=bool, default=False)
@@ -57,6 +58,7 @@ if __name__ == "__main__":
     print_predictor_tables(
         stdout,
         args.text_numbers,
+        args.ngram_lm,
         args.ngram_predictor_orders,
         args.entropy,
         args.flm_model_filenames,
