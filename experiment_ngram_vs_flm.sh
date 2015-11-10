@@ -4,7 +4,7 @@
 # Train ngram and a flm with different corpus sizes and compare.
 
 #izes="10000 100000 500000 1000000 2000000 4000000 8000000 15000000";
-sizes="10000 20000 30000 40000 50000 75000 100000 250000" # 500000 1000000 2000000"
+sizes="2000 5000 10000 20000 30000 40000 50000 75000 100000 250000 500000 1000000" # 500000 1000000 2000000"
 logfile="experiment_ngram_vs_flm.log";
 flm_model="4gramWC";
 fngram_count_command="fngram-count -factor-file flm_models/$flm_model.flm -no-virtual-begin-sentence -nonull -no-virtual-end-sentence -unk -lm -write-counts -no-add-end-sentence-token";
@@ -46,8 +46,8 @@ for size in $sizes; do
 
 	echo -n "$size " >> SALIDA
 
-	python predictor_tables.py -ngram_lm $four_gram_lm_file -ngram_predictor_orders 3 4 -flm_model_filenames flm_models/$flm_model.flm |
-	python analyze_perplexities.py --terminal --no_header |
+	python predictor_tables.py -ngram_lm $four_gram_lm_file -ngram_predictor_orders 3 4 -flm_model_filenames flm_models/$flm_model.flm > predictions_$size.csv
+	python analyze_perplexities.py < predictions_$size.csv --terminal --no_header |
 	tee -a SALIDA;
 
 done

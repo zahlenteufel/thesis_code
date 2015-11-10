@@ -12,26 +12,6 @@ import numpy as np
 def select(table, column):
     return [row[column] for row in table]
 
-stdin = io.open(sys.stdin.fileno(), "r", encoding="utf-8")
-
-header = stdin.readline()[:-1].split(",")[3:]
-
-table = []
-
-while True:
-    line = stdin.readline()[:-1]
-    if not line:
-        break
-    row = line.split(",")
-    if not row:
-        break
-    word_info, probs = row[:3], map(float, row[3:])
-
-    if any(map(lambda x: x == 0, probs)):
-        print >>sys.stderr, "Error in word", word_info[1:3], probs
-
-    table.append(probs)
-
 
 def plot(x, y, xlabel, ylabel, title):
     plt.close()
@@ -52,12 +32,28 @@ def plot(x, y, xlabel, ylabel, title):
 def logit_plot(x, y, xlabel, ylabel, title):
     plot(logit(x), logit(y), "logit " + xlabel, "logit " + ylabel, title)
 
+if __name__ == "__main__":
+    stdin = io.open(sys.stdin.fileno(), "r", encoding="utf-8")
 
-n = len(header)
-for i in xrange(1, n):
-    name = header[0]
-    name2 = header[i]
+    header = stdin.readline()[:-1].split(",")
 
-    cloze_prob, prob = select(table, 0), select(table, i)
+    table = []
 
-    logit_plot(cloze_prob, prob, name, name2, "probabilities")
+    while True:
+        line = stdin.readline()[:-1]
+        if not line:
+            break
+        row = line.split(",")
+        if not row:
+            break
+        probs = map(float, row)
+
+        table.append(probs)
+    n = len(header)
+    for i in xrange(1, n):
+        name = header[0]
+        name2 = header[i]
+
+        cloze_prob, prob = select(table, 0), select(table, i)
+
+        logit_plot(cloze_prob, prob, name, name2, "probabilities")
