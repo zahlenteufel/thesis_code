@@ -5,7 +5,7 @@ s = open("SALIDA").read()
 tt = map(
     lambda r: map(float, r.split()),
     s.split('\n')
-   )
+)
 
 h = ['size', 'cloze', 'cloze_cache', '3gram', '3gram_cache', '4gram', '4gram_cache', 'flm', 'flm_cache']
 
