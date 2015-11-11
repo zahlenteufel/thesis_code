@@ -28,6 +28,8 @@ def plot(ind1, ind2, file):
 # texto,#palabra,palabra,cloze_entropy,zeros,2gram_entropy,#texto,#palabra,
 # palabra,prob_cloze,prob_cache,prob2gram
 
-plot_cols("cloze_entropy", "prob_cloze", "TABLA_BIGRAM.csv")
+#texto,#palabra,palabra,cloze_predictor,unigram_cache_predictor,4gram
+
+# plot_cols("cloze_predictor", "prob_cloze", "entropias")
+plot(1, 0, "prob_ent4.csv")
 plt.close()
-plot_cols("prob_cloze", "prob2gram", "TABLA_BIGRAM.csv")

@@ -9,8 +9,8 @@ from itertools import izip
 import argparse
 
 
-def print_predictor_tables(file, text_numbers, ngram_lm, ngram_predictor_orders, entropy, flm_model_filenames, debug):
-    prediction_texts = PredictionTexts(text_numbers)
+def print_predictor_tables(file, text_numbers, ngram_lm, ngram_predictor_orders, entropy, only_targets_in, flm_model_filenames, debug):
+    prediction_texts = PredictionTexts(text_numbers, only_targets_in=only_targets_in)
     predictors = [HumanPredictor(), UnigramCachePredictor()] + \
         map(lambda order: NgramPredictor(ngram_lm=ngram_lm, order=order), ngram_predictor_orders) + \
         [FLM_Specification(flm_model_filename).predictor() for flm_model_filename in flm_model_filenames]
@@ -23,6 +23,7 @@ def argument_parser():
     parser.add_argument("-ngram_predictor_orders", type=int, nargs="*", default=[])
     parser.add_argument("-ngram_lm", default="")
     parser.add_argument("-entropy", type=bool, default=False)
+    parser.add_argument("-only_targets_in", type=str, default=None)
     parser.add_argument("-flm_model_filenames", nargs="*", default=[])
     parser.add_argument("-debug", type=bool, default=False)
     return parser.parse_args()
@@ -55,12 +56,19 @@ def transpose(table):
 if __name__ == "__main__":
     stdout = io.open(sys.stdout.fileno(), "w", encoding="utf-8")
     args = argument_parser()
+
+    if args.only_targets_in:
+        only_targets_in = set([line[:-1] for line in open(args.only_targets_in)])
+    else:
+        only_targets_in = None
+
     print_predictor_tables(
         stdout,
         args.text_numbers,
         args.ngram_lm,
         args.ngram_predictor_orders,
         args.entropy,
+        only_targets_in,
         args.flm_model_filenames,
         args.debug
     )
