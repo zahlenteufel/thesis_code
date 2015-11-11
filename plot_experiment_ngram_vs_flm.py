@@ -2,7 +2,6 @@ import pylab
 
 s = open("SALIDA").read()
 
-
 tt = map(
     lambda r: map(float, r.split()),
     s.split('\n')

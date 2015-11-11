@@ -13,8 +13,9 @@ class PredictionText:
     'holes' (TargetWords) on it that people have to guess.
     """
 
-    def __init__(self, text_index, filter_by=None):
+    def __init__(self, text_index, filter_by=None, only_targets_in=None):
         self.filter_by = filter_by
+        self.only_targets_in = only_targets_in
         assert(text_index in [1, 2, 3, 4, 5, 7, 8])
         with open(os.path.dirname(os.path.realpath(__file__)) + "/texts1234578.csv", "r") as csvfile:
             reader = UnicodeDictReader(csvfile, delimiter=',')
@@ -28,7 +29,8 @@ class PredictionText:
         return [
             word for line in self.lines() for word in line
             if word.is_target() and
-            (self.filter_by is None or parse_category_brief(word.category_code())["C"] in self.filter_by)
+            (self.filter_by is None or parse_category_brief(word.category_code())["C"] in self.filter_by) and
+            (self.only_targets_in is None or word.in_ascii() in self.only_targets_in)
         ]
 
 
