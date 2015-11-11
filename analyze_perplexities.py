@@ -62,7 +62,6 @@ def print_perplexities(perplexities, perplexities_with_cache, predictor_names, p
     for ppl, ppl_cache in izip(perplexities, perplexities_with_cache):
         print ppl, ppl_cache,
     print
-        # print "%s\t%f\t%f" % (.rjust(25), ppl, pp_cache)
 
 
 def interpolated_with_cache_probability(cache_lambda, cache_probs, column):
