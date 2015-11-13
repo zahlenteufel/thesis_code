@@ -6,6 +6,7 @@ from tempfile import NamedTemporaryFile
 from predictor import Predictor
 from predictor import saturated_last
 import numpy as np
+from math import log10
 
 
 class NgramPredictor(Predictor):
@@ -16,18 +17,18 @@ class NgramPredictor(Predictor):
         self.model_file = ngram_lm or "corpus/%s.lm.gz" % self._name
 
     def batch_predict(self, prediction_text, debug=False):
-        return self.logprobs(self.ngrams(prediction_text), debug)
+        return self.probs(self.ngrams(prediction_text), debug)
 
-    def batch_entropy(self, prediction_text, save_logprobs=False):
+    def batch_entropy(self, prediction_text, save_probs=False):
         vocabulary = self.vocabulary()
         targets = prediction_text.target_words()
         number_of_chunks = 200
         chunk_size = len(targets) / number_of_chunks
         result = []
-        if save_logprobs:
-            f_logprobs = open("logprobs.txt")
-            print >>f_logprobs, "# list of logprobs for %d-gram (%s)" % (self.order, self.model_file)
-            print >>f_logprobs, "# vocabulary-size: %d" % len(vocabulary)
+        if save_probs:
+            f_probs = open("probs.txt", "w")
+            print >>f_probs, "# list of probs for %d-gram (%s)" % (self.order, self.model_file)
+            print >>f_probs, "# vocabulary-size: %d" % len(vocabulary)
         for i in xrange(0, len(targets), chunk_size):
             chunk_targets = targets[i:min(len(targets), i + chunk_size)]
             with NamedTemporaryFile() as f:
@@ -48,15 +49,15 @@ class NgramPredictor(Predictor):
                     "-ppl", f.name],
                     stdout=subprocess.PIPE)
                 ngram_output = p.communicate()[0]
-                logprobs = parse_ngram_output(len(chunk_targets) * len(vocabulary), ngram_output)
-                for i in xrange(0, len(logprobs), len(vocabulary)):
-                    ent = calculate_entropy(logprobs[i:(i + len(vocabulary))])
-                    if save_logprobs:
-                        for logprob in logprobs[i:(i + len(vocabulary))]:
-                            print >>f_logprobs, logprob
+                probs = parse_ngram_output(len(chunk_targets) * len(vocabulary), ngram_output)
+                for i in xrange(0, len(probs), len(vocabulary)):
+                    ent = entropy(probs[i:(i + len(vocabulary))])
+                    if save_probs:
+                        for prob in probs[i:(i + len(vocabulary))]:
+                            print >>f_probs, prob
                     result.append(ent)
-        if save_logprobs:
-            f_logprobs.close()
+        if save_probs:
+            f_probs.close()
         return result
 
     def vocabulary(self):
@@ -65,7 +66,7 @@ class NgramPredictor(Predictor):
     def normalize(self, word):
         return word.in_ascii()
 
-    def logprobs(self, ngrams, debug=False):
+    def probs(self, ngrams, debug=False):
         with NamedTemporaryFile() as f:
             for ngram in ngrams:
                 f.write(" ".join(ngram) + "\n")
@@ -111,5 +112,7 @@ def parse_ngram_output(ngrams_len, ngram_output):
     return res
 
 
-def calculate_entropy(logprobs):
-    return -np.math.fsum(map(lambda lp: lp * pow(10.0, lp), logprobs))
+def entropy(probs):
+    "Calculate normalized entropy"
+    V = float(len(probs))
+    return -np.math.fsum(map(lambda p: p * log10(p), probs)) / log10(V)

@@ -9,8 +9,9 @@ class HumanPredictor:
         i.e. return a list of the probabilities for each word in the lm"""
         return [target.cloze_prob(self.delta) for target in prediction_text.target_words()]
 
-    def batch_entropy(self, prediction_text, delta):
-        return [target.cloze_entropy(delta) for target in prediction_text.target_words()]
+    def batch_entropy(self, prediction_text, save_probs=False):
+        return [target.cloze_entropy(self.delta) for target in prediction_text.target_words()]
 
     def name(self):
         return "cloze_predictor"
+
