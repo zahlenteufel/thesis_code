@@ -14,4 +14,3 @@ class HumanPredictor:
 
     def name(self):
         return "cloze_predictor"
-

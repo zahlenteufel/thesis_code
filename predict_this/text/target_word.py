@@ -23,8 +23,13 @@ class TargetWord(Word):
     def everyone_guessed(self):
         return self.completed_words().count(self.in_ascii()) == len(self.completed_words())
 
+    def different_answers(self):
+        return float(len(set(self.completed_words())) + 1)
+
     def cloze_entropy(self, delta):
-        return -sum([self._cloze_prob(w, delta) * log10(self._cloze_prob(w, delta)) for w in self._completed_words])
+        V = self.different_answers()
+        probs = [self._cloze_prob(w, delta) for w in set(self.completed_words())]
+        return -sum(map(lambda p: p * log10(p), probs)) / log10(V)
 
     def _cloze_prob(self, word, delta):
         """Calculates the cloze probability from the completed words,
@@ -32,8 +37,7 @@ class TargetWord(Word):
         """
         count = float(self._completed_words.count(word))
         total_answers = float(len(self.completed_words()))
-        different_answers = float(len(set(self.completed_words())) + 1)
-        return (count + delta) / (total_answers + delta * different_answers)
+        return (count + delta) / (total_answers + delta * self.different_answers())
 
     def context(self):
         return self._context
