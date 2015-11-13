@@ -43,7 +43,7 @@ def print_row(file, row, separator=u","):
 
 def predictions_table(predictors, prediction_texts, entropy, debug=False):
     if entropy:
-        return transpose([predictor.batch_entropy(prediction_texts) for predictor in predictors])
+        return transpose([predictor.batch_entropy(prediction_texts, save_probs=True) for predictor in predictors])
     else:
         return transpose([predictor.batch_predict(prediction_texts, debug) for predictor in predictors])
 
