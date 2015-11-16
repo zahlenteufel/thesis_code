@@ -11,8 +11,8 @@ import argparse
 def analyze_perplexities_with_and_without_cache(file, plot_results, print_header):
     predictor_names, table = read_table(file)
     cols = columns(table)
-    predictions = [col for i, col in enumerate(cols) if i > 1]
-    predictor_names = [name for i, name in enumerate(predictor_names) if i > 1]
+    predictions = cols[2:]
+    predictor_names = predictor_names[2:]
     print predictor_names
     cache_pred = cols[1]
     interpolated_predictions = map(
