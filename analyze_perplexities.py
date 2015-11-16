@@ -13,18 +13,18 @@ from itertools import izip
 def analyze_perplexities_with_and_without_cache(file, in_terminal, print_header):
     predictor_names, table = read_table(file)
     cols = columns(table)
-    predictions = [col for i, col in enumerate(cols) if i != 1]
-    predictor_names = [name for i, name in enumerate(predictor_names) if i != 1]
+    predictions = [col for i, col in enumerate(cols) if i > 1]
+    predictor_names = [name for i, name in enumerate(predictor_names) if i > 1]
+    print predictor_names
     cache_pred = cols[1]
     interpolated_predictions = map(
-        lambda column: interpolated_with_cache_probability(0.10, cache_pred, column),
+        lambda column: interpolated_with_cache_probability(0.22, cache_pred, column),
         predictions
     )
     perplexities1 = map(predictor_perplexity, predictions)
     perplexities2 = map(predictor_perplexity, interpolated_predictions)
-    if in_terminal:
-        print_perplexities(perplexities1, perplexities2, predictor_names, print_header)
-    else:
+    print_perplexities(perplexities1, perplexities2, predictor_names, print_header)
+    if not in_terminal:
         plot_bars("Perplexity (less is better)", perplexities1, perplexities2, predictor_names)
 
 
@@ -64,8 +64,11 @@ def print_perplexities(perplexities, perplexities_with_cache, predictor_names, p
     print
 
 
-def interpolated_with_cache_probability(cache_lambda, cache_probs, column):
-    return [cache_lambda * cache_prob + (1 - cache_lambda) * field for cache_prob, field in zip(cache_probs, column)]
+def interpolated_with_cache_probability(cache_lambda, cache_probs, column, geometric_combination=False):
+    if geometric_combination:
+        return [cache_prob ** cache_lambda * field ** (1 - cache_lambda) for cache_prob, field in zip(cache_probs, column)]
+    else:
+        return [cache_lambda * cache_prob + (1 - cache_lambda) * field for cache_prob, field in zip(cache_probs, column)]
 
 
 def plot_bars(ylabel, values, values2, labels):
@@ -95,16 +98,13 @@ def columns(table):
 
 
 def read_table(file, separator=u","):
-    header = file.readline()[:-1].split(separator)[3:]
+    header = file.readline()[:-1].split(separator)
     table = []
     while True:
         row = file.readline()[:-1].split(separator)
         if len(row[0]) == 0:
             break
-        word_info, probs = row[:3], map(float, row[3:])
-
-        if not all(probs):
-            print >>sys.stderr, "Error in word", word_info[1:3], probs
+        probs = map(float, row)
 
         table.append(probs)
     return header, table
