@@ -1,0 +1,7 @@
+1
+W : 3 W(-1) C(-1) L(-1) samples_2.count.gz samples_2.lm.gz 5
+W1,C1,L1 W1 kndiscount gtmin 1 interpolate
+C1,L1 L1,C1 kndiscount gtmin 100000000 strategy bog_node_prob combine wmean C1 7 L1 3
+C1 C1 kndiscount gtmin 3 kn-count-parent W1,C1,L1
+L1 L1 kndiscount gtmin 1 kn-count-parent W1,C1,L1
+0 0 kndiscount gtmin 1 kn-count-parent W1,C1,L1

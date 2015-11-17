@@ -1,0 +1,8 @@
+1
+W : 4 W(-1) W(-2) C(-1) L(-1) samples_best_perp.count.gz samples_best_perp.lm.gz 6
+W1,W2,C1,L1 W2 kndiscount gtmin 3 interpolate
+W1,C1,L1 W1 kndiscount gtmin 2 interpolate
+C1,L1 L1,C1 kndiscount gtmin 100000000 combine max strategy bog_node_prob
+C1 C1 kndiscount gtmin 3 kn-count-parent W1,C1,L1
+L1 L1 kndiscount gtmin 1 kn-count-parent W1,C1,L1
+0 0 kndiscount gtmin 1 kn-count-parent W1,C1,L1
