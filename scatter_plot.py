@@ -28,5 +28,5 @@ def plot(ind1, ind2, file, logit_scale=False):
     plt.scatter(x, y, alpha=0.05)
     plt.show()
 
-plot_cols("entropia_cloze", "prob_cloze", "analisis_4gram.csv", logit_scale=False)
+plot_cols("entropia_4gram", "prob_4gram", "analisis_4gram_2.csv", logit_scale=False)
 plt.close()
