@@ -59,3 +59,6 @@ class UnigramCache:
         total = float(self.total)
         vocabulary = float(len(self.histogram) + 1)  # + 1 for the <unk>
         return (count + delta) / (total + delta * vocabulary)
+
+    def vocabulary(self):
+        return set(self.histogram.keys())
