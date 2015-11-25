@@ -11,13 +11,19 @@ def grouper(iterable, n):
     return izip(*args)
 
 
+def get_lines(filename):
+    return map(lambda l: l[:-1], open(filename))
+
+
 def target_probs(text_number):
-    with open("logprobs_texto_%d.txt" % text_number) as f:
+    # with open("logprobs_texto_%d.txt" % text_number) as f:
+    unk_probs = map(float, get_lines("probs_unk_texto_%d" % text_number))
+    with open("probs_texto_1_cachito") as f:
         f.readline()  # discard header
         V = int(f.readline()[:-1].split()[2])
         assert(len(vocab) == V)
-        for probs in grouper(f, V):
-            yield map(float, probs)
+        for unkprob, probs in izip(unk_probs, grouper(f, V)):
+            yield unkprob, map(float, probs)
 
 
 def cache_snapshots(prediction_text):
@@ -52,7 +58,6 @@ def interpolate(a, b, cache_lambda):
 
 
 def combine_cache_probs(cache_lambda, vocab, probs, cache):
-    unk = "<<<unknown>>"
     intersection = vocab & cache.vocabulary()
     vocab1 = list(vocab - intersection)
     vocab2 = list(cache.vocabulary() - intersection)
@@ -63,20 +68,22 @@ def combine_cache_probs(cache_lambda, vocab, probs, cache):
 
     return \
         interpolate(map(probs.get, intersection), map(cache_get, intersection), cache_lambda) + \
-        interpolate(map(probs.get, vocab1), map(cache_get, [unk]), cache_lambda) + \
-        interpolate(map(probs.get, [unk]), map(cache_get, vocab2), cache_lambda)
+        interpolate(map(probs.get, vocab1), map(cache_get, ["<unk>"]), cache_lambda) + \
+        interpolate(map(probs.get, ["<unk>"]), map(cache_get, vocab2), cache_lambda)
 
 
 def calculate_entropy_with_cache(cache_lambda, vocab, text_number):
     text = PredictionText(text_number)
     vocab_hash = set(vocab)
     for target, cache, probs4gram in izip(text.target_words(), cache_snapshots(text), target_probs(text_number)):
-        probs = dict(zip(vocab, probs4gram))
-        yield normalized_entropy(combine_cache_probs(cache_lambda, vocab_hash, probs, cache))
+        unkprob, probs = probs4gram
+        dprobs = dict(zip(vocab, probs4gram))
+        dprobs["<unk>"] = unkprob
+        yield normalized_entropy(combine_cache_probs(cache_lambda, vocab_hash, dprobs, cache))
 
 
 print "cargando vocabulario.. ",
-vocab = set(map(lambda l: l[:-1], open("corpus/vocabulario.txt")))
+vocab = set(map(lambda l: l[:-1], open("corpus/vocabulary.txt")))
 print "listo"
 
 for text_number in (1, 2, 3, 4, 5, 7, 8):
