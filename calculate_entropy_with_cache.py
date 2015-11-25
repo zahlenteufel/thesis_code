@@ -85,8 +85,8 @@ def calculate_entropy_with_cache(cache_lambda, vocab, text_number):
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Calculate entropy of n-gram probabilities with cache")
-    parser.add_argument("text_numbers", type=int, nargs="+", help="text numbers")
-    parser.add_argument("cache_lambda", type=float, default=0.22, help="cache lambda")
+    parser.add_argument("-text_numbers", type=int, nargs="+", help="text numbers")
+    parser.add_argument("-cache_lambda", type=float, default=0.22, help="cache lambda")
     return parser.parse_args()
 
 
