@@ -16,9 +16,8 @@ def get_lines(filename):
 
 
 def target_probs(text_number):
-    # with open("logprobs_texto_%d.txt" % text_number) as f:
     unk_probs = map(float, get_lines("probs_unk_texto_%d" % text_number))
-    with open("probs_texto_1_cachito") as f:
+    with open("logprobs_texto_%d.txt" % text_number) as f:
         f.readline()  # discard header
         V = int(f.readline()[:-1].split()[2])
         assert(len(vocab) == V)
@@ -87,5 +86,5 @@ vocab = set(map(lambda l: l[:-1], open("corpus/vocabulary.txt")))
 print "listo"
 
 for text_number in (1, 2, 3, 4, 5, 7, 8):
-    for entropy in calculate_entropy_with_cache(0.2, vocab, text_number):
+    for entropy in calculate_entropy_with_cache(0.22, vocab, text_number):
         print entropy
