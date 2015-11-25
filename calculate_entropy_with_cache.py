@@ -1,5 +1,6 @@
 from itertools import izip
 import numpy as np
+import argparse
 from math import log
 from predict_this.text.prediction_text import PredictionText
 from predict_this.predictor.unigram_cache_predictor import UnigramCache
@@ -17,7 +18,7 @@ def get_lines(filename):
 
 def target_probs(text_number):
     unk_probs = map(float, get_lines("probs_unk_texto_%d" % text_number))
-    with open("logprobs_texto_%d.txt" % text_number) as f:
+    with open("probs_texto_%d.txt" % text_number) as f:
         f.readline()  # discard header
         V = int(f.readline()[:-1].split()[2])
         assert(len(vocab) == V)
@@ -40,12 +41,12 @@ def normalized_entropy(probs):
     return -np.math.fsum(map(lambda p: p * log(p, 10.0), probs)) / log(V, 10.0)
 
 
-def interpolate(a, b, cache_lambda):
-    if len(a) == 1:
-        a = [a[0] / len(b)] * len(b)
-    elif len(b) == 1:
-        b = [b[0] / len(a)] * len(a)
-    return interpolated_with_cache_probability(cache_lambda, a, b)
+def interpolate(cache_lambda, cache_probs, probs):
+    if len(cache_probs) == 1:
+        cache_probs = [cache_probs[0] / len(probs)] * len(probs)
+    elif len(probs) == 1:
+        probs = [probs[0] / len(cache_probs)] * len(cache_probs)
+    return interpolated_with_cache_probability(cache_lambda, cache_probs, probs)
 
 # hallar cuanto vale unk_prob4, hallar cuantos son los que hay en Vcache \ Vngram. N1
 # hallar cuanto vale unk_cache, hallar cuantos hay en Vngram \ Vcache. N2
@@ -58,16 +59,16 @@ def interpolate(a, b, cache_lambda):
 
 def combine_cache_probs(cache_lambda, vocab, probs, cache):
     intersection = vocab & cache.vocabulary()
-    vocab1 = list(vocab - intersection)
-    vocab2 = list(cache.vocabulary() - intersection)
+    vocab_only_ngram = list(vocab - intersection)
+    vocab_only_cache = list(cache.vocabulary() - intersection)
     intersection = list(intersection)
 
     def cache_get(w):
         return cache.prob(w, 0.0002)
 
-    i1 = interpolate(map(probs.get, intersection), map(cache_get, intersection), cache_lambda)
-    i2 = interpolate(map(probs.get, vocab1), map(cache_get, ["<unk>"]), cache_lambda)
-    i3 = interpolate(map(probs.get, ["<unk>"]), map(cache_get, vocab2), cache_lambda)
+    i1 = interpolate(cache_lambda, map(cache_get, intersection), map(probs.get, intersection))
+    i2 = interpolate(cache_lambda, map(cache_get, ["<unk>"]), map(probs.get, vocab_only_ngram))
+    i3 = interpolate(cache_lambda,  map(cache_get, vocab_only_cache), map(probs.get, ["<unk>"]))
     return i1 + i2 + i3
 
 
@@ -81,8 +82,19 @@ def calculate_entropy_with_cache(cache_lambda, vocab, text_number):
         yield normalized_entropy(combine_cache_probs(cache_lambda, vocab_hash, dprobs, cache))
 
 
-vocab = get_lines("corpus/vocabulary.txt")
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+        description="Calculate entropy of n-gram probabilities with cache")
+    parser.add_argument("text_numbers", type=int, nargs="+", help="text numbers")
+    parser.add_argument("cache_lambda", type=float, default=0.22, help="cache lambda")
+    return parser.parse_args()
 
-for text_number in (1, 2, 3, 4, 5, 7, 8):
-    for entropy in calculate_entropy_with_cache(0.22, vocab, text_number):
-        print entropy
+
+if __name__ == "__main__":
+    arguments = parse_arguments()
+    vocab = get_lines("corpus/vocabulary.txt")
+
+    for text_number in arguments.text_numbers:
+        with open("entropy_with_cache_%d" % text_number, "w") as f:
+            for entropy in calculate_entropy_with_cache(arguments.cache_lambda, vocab, text_number):
+                print >>f, entropy
