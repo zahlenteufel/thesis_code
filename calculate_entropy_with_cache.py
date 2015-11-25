@@ -65,10 +65,10 @@ def combine_cache_probs(cache_lambda, vocab, probs, cache):
     def cache_get(w):
         return cache.prob(w, 0.0002)
 
-    return \
-        interpolate(map(probs.get, intersection), map(cache_get, intersection), cache_lambda) + \
-        interpolate(map(probs.get, vocab1), map(cache_get, ["<unk>"]), cache_lambda) + \
-        interpolate(map(probs.get, ["<unk>"]), map(cache_get, vocab2), cache_lambda)
+    i1 = interpolate(map(probs.get, intersection), map(cache_get, intersection), cache_lambda)
+    i2 = interpolate(map(probs.get, vocab1), map(cache_get, ["<unk>"]), cache_lambda)
+    i3 = interpolate(map(probs.get, ["<unk>"]), map(cache_get, vocab2), cache_lambda)
+    return i1 + i2 + i3
 
 
 def calculate_entropy_with_cache(cache_lambda, vocab, text_number):
@@ -76,14 +76,12 @@ def calculate_entropy_with_cache(cache_lambda, vocab, text_number):
     vocab_hash = set(vocab)
     for target, cache, probs4gram in izip(text.target_words(), cache_snapshots(text), target_probs(text_number)):
         unkprob, probs = probs4gram
-        dprobs = dict(zip(vocab, probs4gram))
+        dprobs = dict(zip(vocab, probs))
         dprobs["<unk>"] = unkprob
         yield normalized_entropy(combine_cache_probs(cache_lambda, vocab_hash, dprobs, cache))
 
 
-print "cargando vocabulario.. ",
-vocab = set(map(lambda l: l[:-1], open("corpus/vocabulary.txt")))
-print "listo"
+vocab = get_lines("corpus/vocabulary.txt")
 
 for text_number in (1, 2, 3, 4, 5, 7, 8):
     for entropy in calculate_entropy_with_cache(0.22, vocab, text_number):
