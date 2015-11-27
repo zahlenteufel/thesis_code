@@ -75,24 +75,25 @@ def combine_cache_probs(cache_lambda, probs, cache):
 
 def create_prunned_dist(probs, vocab, prune_N):
     ps = sorted(zip(probs, count(0)))[:prune_N]
-    probability_used = np.fsum(p for p, _ in ps)
+    probability_used = np.math.fsum(p for p, _ in ps)
     # rescale the probabilities
     dprobs = dict((vocab[i], p / probability_used) for p, i in ps)
     dprobs["<unk>"] = 0
     return dprobs
 
 
-def calculate_entropy_with_cache(cache_lambda, vocab, text_number):
+def calculate_entropy_with_cache(cache_lambda, vocab, text_number, prune_N):
     text = PredictionText(text_number)
     for target, cache, probs4gram in izip(text.target_words(), cache_snapshots(text), target_probs(text_number)):
         unkprob, probs = probs4gram
-        dprobs = create_prunned_dist(probs, vocab, 1000)
-        yield normalized_entropy(combine_cache_probs(cache_lambda, dprobs, cache))
+        dprobs = create_prunned_dist(probs, vocab, prune_N)
+        yield dprobs.get(target.in_ascii(), 0), normalized_entropy(combine_cache_probs(cache_lambda, dprobs, cache))
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Calculate entropy of n-gram probabilities with cache")
+    parser.add_argument("-prune", type=int, default=500000, help="prune distribution")
     parser.add_argument("-text_numbers", type=int, nargs="+", help="text numbers")
     parser.add_argument("-cache_lambda", type=float, default=0.22, help="cache lambda")
     return parser.parse_args()
@@ -104,5 +105,5 @@ if __name__ == "__main__":
 
     for text_number in arguments.text_numbers:
         with open("entropy_with_cache_%d" % text_number, "w") as f:
-            for entropy in calculate_entropy_with_cache(arguments.cache_lambda, vocab, text_number):
-                print >>f, entropy
+            for probs, entropy in calculate_entropy_with_cache(arguments.cache_lambda, vocab, text_number, arguments.prune):
+                print >>f, "%f,%f" % (probs, entropy)
