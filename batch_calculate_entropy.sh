@@ -8,8 +8,6 @@ for PRUNE in {10,100,1000,10000,100000}; do
 
 	> _batch
 
-	PRUNE=10000
-
 	for i in {1,2,3,4,5,7,8}; do
 		echo "python calculate_entropy_with_cache.py -text_numbers $i -prune $PRUNE -cache_lambda 0" >> _batch;
 	done
