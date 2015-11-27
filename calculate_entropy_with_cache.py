@@ -38,7 +38,7 @@ def cache_snapshots(prediction_text):
 
 def normalized_entropy(probs):
     V = float(len(probs))
-    return -np.math.fsum(map(lambda p: p * log(p, 10.0), probs)) / log(V, 10.0)
+    return -np.math.fsum(p * log(p, 10.0) for p in probs if p) / log(V, 10.0)
 
 
 def interpolate(cache_lambda, cache_probs, probs):
