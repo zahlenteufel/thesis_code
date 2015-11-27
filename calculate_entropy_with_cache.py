@@ -1,4 +1,4 @@
-from itertools import izip
+from itertools import izip, count
 import numpy as np
 import argparse
 from math import log
@@ -57,7 +57,8 @@ def interpolate(cache_lambda, cache_probs, probs):
 #   [probs[<unk>] / N1] * N1 interpolados con cache[Vcache \ Vngram]]
 
 
-def combine_cache_probs(cache_lambda, vocab, probs, cache):
+def combine_cache_probs(cache_lambda, probs, cache):
+    vocab = set(probs.keys())
     intersection = vocab & cache.vocabulary()
     vocab_only_ngram = list(vocab - intersection)
     vocab_only_cache = list(cache.vocabulary() - intersection)
@@ -68,18 +69,25 @@ def combine_cache_probs(cache_lambda, vocab, probs, cache):
 
     i1 = interpolate(cache_lambda, map(cache_get, intersection), map(probs.get, intersection))
     i2 = interpolate(cache_lambda, map(cache_get, ["<unk>"]), map(probs.get, vocab_only_ngram))
-    i3 = interpolate(cache_lambda,  map(cache_get, vocab_only_cache), map(probs.get, ["<unk>"]))
+    i3 = interpolate(cache_lambda, map(cache_get, vocab_only_cache), map(probs.get, ["<unk>"]))
     return i1 + i2 + i3
+
+
+def create_prunned_dist(probs, vocab, prune_N):
+    ps = sorted(zip(probs, count(0)))[:prune_N]
+    probability_used = np.fsum(p for p, _ in ps)
+    # rescale the probabilities
+    dprobs = dict((vocab[i], p / probability_used) for p, i in ps)
+    dprobs["<unk>"] = 0
+    return dprobs
 
 
 def calculate_entropy_with_cache(cache_lambda, vocab, text_number):
     text = PredictionText(text_number)
-    vocab_hash = set(vocab)
     for target, cache, probs4gram in izip(text.target_words(), cache_snapshots(text), target_probs(text_number)):
         unkprob, probs = probs4gram
-        dprobs = dict(zip(vocab, probs))
-        dprobs["<unk>"] = unkprob
-        yield normalized_entropy(combine_cache_probs(cache_lambda, vocab_hash, dprobs, cache))
+        dprobs = create_prunned_dist(probs, vocab, 1000)
+        yield normalized_entropy(combine_cache_probs(cache_lambda, dprobs, cache))
 
 
 def parse_arguments():
