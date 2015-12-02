@@ -1,12 +1,13 @@
+#!/usr/bin/env python
 import matplotlib.pyplot as plt
 import argparse
 from scipy.special import logit
 from scipy.stats.stats import pearsonr
-from predict_this.predictor.ngram_predictor import NgramPredictor
-from predict_this.predictor.human_predictor import HumanPredictor
-from predict_this.predictor.unigram_cache_predictor import UnigramCachePredictor
-from predict_this.text.prediction_texts import PredictionTexts
-from predict_this.category.category import ALL_CATEGORIES, FUNCTION_CATEGORIES, CONTENT_CATEGORIES
+from thesis_code.predictor.ngram_predictor import NgramPredictor
+from thesis_code.predictor.human_predictor import HumanPredictor
+from thesis_code.predictor.unigram_cache_predictor import UnigramCachePredictor
+from thesis_code.text.prediction_texts import PredictionTexts
+from thesis_code.category.category import ALL_CATEGORIES, FUNCTION_CATEGORIES, CONTENT_CATEGORIES
 
 
 def correlation_curve_ngrams(texts, ngram_orders):

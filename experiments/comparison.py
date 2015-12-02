@@ -1,13 +1,14 @@
+#!/usr/bin/env python
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
 from scipy.special import logit
 from scipy.stats.stats import pearsonr
-from predict_this.predictor.ngram_predictor import NgramPredictor
-from predict_this.predictor.human_predictor import HumanPredictor
-from predict_this.predictor.unigram_cache_predictor import UnigramCachePredictor
-from predict_this.text.prediction_texts import PredictionTexts
-import predict_this.category.category as category
+from thesis_code.predictor.ngram_predictor import NgramPredictor
+from thesis_code.predictor.human_predictor import HumanPredictor
+from thesis_code.predictor.unigram_cache_predictor import UnigramCachePredictor
+from thesis_code.text.prediction_texts import PredictionTexts
+import thesis_code.category.category as category
 
 parser = argparse.ArgumentParser(description="Plot and calculate correlation between cloze prob and ngram prob.")
 parser.add_argument("-text_numbers", type=int, nargs="+", default=[1, 2, 3, 4, 5, 7, 8], help="numbers in [1,2,3,4,5,7,8]")

@@ -1,4 +1,5 @@
-from predict_this.text.prediction_texts import PredictionTexts
+#!/usr/bin/env python
+from thesis_code.text.prediction_texts import PredictionTexts
 
 target_words = list(PredictionTexts([1, 2, 3, 4, 5, 7, 8]).target_words())
 

@@ -1,5 +1,6 @@
-from predict_this.text.prediction_text import PredictionText
-from predict_this.predictor.ngram_predictor import NgramPredictor
+#!/usr/bin/env python
+from thesis_code.text.prediction_text import PredictionText
+from thesis_code.predictor.ngram_predictor import NgramPredictor
 
 
 def adhoc_preds(predictor, text):

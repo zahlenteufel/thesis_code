@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import pylab
 
 s = open("SALIDA").read()

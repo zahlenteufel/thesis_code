@@ -1,11 +1,12 @@
+#!/usr/bin/env python
 import matplotlib.pyplot as plt
 import argparse
 from scipy.special import logit
 # from numpy import log10
-import predict_this.category.category as category
-from predict_this.predictor.ngram_predictor import NgramPredictor
-from predict_this.text.prediction_texts import PredictionTexts
-from predict_this.predictor.human_predictor import HumanPredictor
+import thesis_code.category.category as category
+from thesis_code.predictor.ngram_predictor import NgramPredictor
+from thesis_code.text.prediction_texts import PredictionTexts
+from thesis_code.predictor.human_predictor import HumanPredictor
 
 
 parser = argparse.ArgumentParser(description="Plot histograms for ngram_prob, cloze_prob and their correpsonding logit transforms")

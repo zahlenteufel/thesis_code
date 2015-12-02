@@ -1,8 +1,9 @@
-from predict_this.flm.flm_specification import FLM_Specification
-from predict_this.text.prediction_texts import PredictionTexts
-from predict_this.predictor.unigram_cache_predictor import UnigramCachePredictor
-from predict_this.predictor.human_predictor import HumanPredictor
-from predict_this.predictor.ngram_predictor import NgramPredictor
+#!/usr/bin/env python
+from thesis_code.flm.flm_specification import FLM_Specification
+from thesis_code.text.prediction_texts import PredictionTexts
+from thesis_code.predictor.unigram_cache_predictor import UnigramCachePredictor
+from thesis_code.predictor.human_predictor import HumanPredictor
+from thesis_code.predictor.ngram_predictor import NgramPredictor
 import sys
 import io
 from itertools import izip
