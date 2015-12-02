@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from itertools import izip, count
 import numpy as np
 import argparse
