@@ -110,7 +110,7 @@ def parse_arguments():
 
 if __name__ == "__main__":
     arguments = parse_arguments()
-    vocab = get_lines("corpus/vocabulary.txt")
+    vocab = get_lines("corpus_vocabulary.txt")
 
     for text_number in arguments.text_numbers:
         with my_open("entropy_with_cache_%d" % text_number, "w") as f:
