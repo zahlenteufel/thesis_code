@@ -4,7 +4,7 @@ from target_word import TargetWord
 from word import Word
 import os
 
-from ..category.category import parse_category_brief
+from thesis_code.category.category import parse_category_brief
 
 
 class PredictionText:
