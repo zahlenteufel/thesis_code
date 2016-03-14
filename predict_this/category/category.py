@@ -30,7 +30,7 @@ def parse_category_brief(category_info):
     long_description = parse_category(category_info)
     description = {}
     description["C"] = long_description["category_code"]
-    # observe that every factor starts with a different letter!, otherwise this code doesnt work :P
+    # note that every factor starts with a different letter!, otherwise this code doesnt work :P
     for factor in ["category_code", "numero", "genero", "persona", "modo", "tiempo"]:
         if factor in long_description:
             description[factor[0].upper()] = long_description[factor][0]
