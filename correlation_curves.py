@@ -18,7 +18,7 @@ def correlation_curve_ngrams(texts, ngram_orders):
         x = []
         y = []
 
-        ngram_probs = NgramPredictor(order).batch_predict(texts)
+        ngram_probs = NgramPredictor("corpus/4gram.lm.gz", order).batch_predict(texts)
 
         for target, cloze_prob, ngram_prob in zip(targets, cloze_probs, ngram_probs):
             x.append(cloze_prob)
@@ -35,7 +35,7 @@ def correlation_curve_cache(texts, ngram_order, cache_lambdas):
     corrs = []
     targets = texts.target_words()
     cloze_probs = HumanPredictor().batch_predict(texts)
-    ngram_probs = NgramPredictor(ngram_order).batch_predict(texts)
+    ngram_probs = NgramPredictor("corpus/4gram.lm.gz", ngram_order).batch_predict(texts)
 
     for cache_lambda in cache_lambdas:
         x = []
@@ -73,18 +73,19 @@ def parse_arguments():
 
 
 # def plot_cache_corr_function_versus_content():
-#     cache_lambdas = map(lambda x: x / 1000.0, xrange(1000))
+#     N = 1000
+#     cache_lambdas = map(lambda x: x / float(N), xrange(N))
 #     function_corrs = correlation_curve_cache(texts, FUNCTION_CATEGORIES, 4, cache_lambdas)
 #     content_corrs = correlation_curve_cache(texts, CONTENT_CATEGORIES, 4, cache_lambdas)
 
 #     print "max in function corrs", cache_lambdas[function_corrs.index(max(function_corrs))]
 #     print "max in content corrs", cache_lambdas[content_corrs.index(max(content_corrs))]
 
-#     plt.xlabel("cache_lambda")
-#     plt.ylabel("Correlacion de logit 4-gram y logit cloze variando cache lambda")
+#     plt.xlabel("$\lambda_{cache}$")
+#     plt.ylabel("Correlacion de logit 4-gram y logit cloze")
 #     plt.grid(True)
-#     plt.plot(cache_lambdas, function_corrs, "r-", label="function")
-#     plt.plot(cache_lambdas, content_corrs, "g-", label="content")
+#     plt.plot(cache_lambdas, function_corrs, "r-", label="funcion")
+#     plt.plot(cache_lambdas, content_corrs, "g-", label="contenido")
 #     plt.show()
 
 

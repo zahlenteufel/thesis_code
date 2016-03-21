@@ -19,8 +19,8 @@ def cache_different_limits(limits):
         )
         perplexities.append(perplexity)
         print limit, perplexity
-    plt.ylabel("Perplexity")
-    plt.xlabel("Cache Limit")
+    plt.ylabel("Perplejidad")
+    plt.xlabel("Limite de Cache")
     plt.plot(limits, perplexities, ".-")
     plt.show()
 

@@ -23,7 +23,7 @@ def analyze_perplexities_with_and_without_cache(file, plot_results, print_header
     perplexities2 = map(predictor_perplexity, interpolated_predictions)
     print_perplexities(perplexities1, perplexities2, predictor_names, print_header)
     if plot_results:
-        plot_bars("Perplexity (menos es mejor)", perplexities1, perplexities2, predictor_names)
+        plot_bars("Perplejidad (menos es mejor)", perplexities1, perplexities2, predictor_names)
 
 
 def analyze_perplexities_only(file):
