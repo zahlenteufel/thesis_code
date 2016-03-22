@@ -2,22 +2,12 @@ import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from predict_this.category.category import CONTENT_CATEGORIES
+from predict_this.text.prediction_texts import PredictionTexts
 import numpy as np
 import pylab
 
-data = []
-with open("predict_this/text/texts1234578.csv") as f:
-    header = f.next()
-    freq_index = header.split(",").index("freq")
-    tag_index = header.split(",").index("tag")
-    for line in f:
-        fields = line.split(",")
-        freq = float(fields[freq_index])
-        tag = fields[tag_index]
-        if tag[0] in CONTENT_CATEGORIES:
-            data.append(freq)
-            # data.append(math.log10(freq))
-
+words = PredictionTexts([1, 2, 3, 4, 5, 7, 8]).words()
+data = [word.frequency() for word in PredictionTexts([1, 2, 3, 4, 5, 7, 8]).words(filter_by=CONTENT_CATEGORIES)]
 
 y, binEdges = np.histogram(data, bins=80)
 bincenters = 0.5 * (binEdges[1:] + binEdges[:-1])

@@ -5,8 +5,8 @@ from math import log10
 
 class TargetWord(Word):
 
-    def __init__(self, word, lemma, category_code, text_index, word_index, context, completed_words):
-        Word.__init__(self, word, lemma, category_code, text_index, word_index)
+    def __init__(self, word, lemma, category_code, frequency, text_index, word_index, context, completed_words):
+        Word.__init__(self, word, lemma, category_code, frequency, text_index, word_index)
         self._context = context
         self._completed_words = map(to_ascii, completed_words)
 
@@ -55,6 +55,7 @@ class TargetWord(Word):
                 word=row["word"],
                 lemma=row["lemma"],
                 category_code=row["tag"],
+                frequency=row["freq"],
                 text_index=int(row["text_index"]),
                 word_index=int(row["word_index"]),
                 context=current_line[:],
@@ -65,6 +66,7 @@ class TargetWord(Word):
                 word=row["word"],
                 lemma=row["lemma"],
                 category_code=row["tag"],
+                frequency=row["freq"],
                 text_index=int(row["text_index"]),
                 word_index=int(row["word_index"]),
             )
