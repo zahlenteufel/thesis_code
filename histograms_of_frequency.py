@@ -1,15 +1,12 @@
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 from scipy.stats import norm
-import sys
-sys.path.insert(0, '/home/gas/Desktop/tesis')
-from thesis_code.category.category import CONTENT_CATEGORIES
-# import matplotlib.pyplot as plt
+from predict_this.category.category import CONTENT_CATEGORIES
 import numpy as np
 import pylab
 
 data = []
-with open("../text/texts1234578.csv") as f:
+with open("predict_this/text/texts1234578.csv") as f:
     header = f.next()
     freq_index = header.split(",").index("freq")
     tag_index = header.split(",").index("tag")
