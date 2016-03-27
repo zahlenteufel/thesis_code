@@ -6,8 +6,9 @@ from predict_this.text.prediction_texts import PredictionTexts
 import numpy as np
 import pylab
 
-words = PredictionTexts([1, 2, 3, 4, 5, 7, 8]).words()
-data = [word.frequency() for word in PredictionTexts([1, 2, 3, 4, 5, 7, 8]).words(filter_by=CONTENT_CATEGORIES)]
+data = [word.frequency() for word in
+        PredictionTexts([1, 2, 3, 4, 5, 7, 8])
+        .words(filter_by=CONTENT_CATEGORIES)]
 
 y, binEdges = np.histogram(data, bins=80)
 bincenters = 0.5 * (binEdges[1:] + binEdges[:-1])

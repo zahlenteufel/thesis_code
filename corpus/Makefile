@@ -5,11 +5,15 @@ log=@echo "$(ccyellow)$(shell date): $(1)$(ccend)"
 # error=rm -f $@
 # ; @echo "$(ccred)$(shell date): ERROR! $(ccend)")
 
+
+.DELETE_ON_ERROR: tmp/1_joined_texts.txt tmp/2_cleaned_characters.txt tmp/3_abreviaturas_fixed.txt tmp/4_fixed_broken_words.txt tmp/5_removed_emails_and_blanks.txt tmp/6_removed_parenthesis.txt corpus_cleaned.txt corpus_cleaned_normalized.txt factored_corpus_WGNCP.txt factored_corpus_WGNCPL.txt
+
+.PHONY: clean all tagged_corpus
+
 all: corpus_cleaned_normalized.txt
 
-.DELETE_ON_ERROR: tmp/1_joined_texts.txt tmp/2_cleaned_characters.txt tmp/3_abreviaturas_fixed.txt tmp/4_fixed_broken_words.txt tmp/5_removed_emails_and_blanks.txt tmp/6_removed_parenthesis.txt corpus_cleaned.txt corpus_cleaned_normalized.txt
+tagged_corpus: factored_corpus_WGNCPL.txt
 
-.PHONY: clean all
 clean:
 	rm -f tmp/2_cleaned_characters.txt
 	rm -f tmp/3_abreviaturas_fixed.txt
@@ -52,8 +56,12 @@ corpus_cleaned.txt: tmp/6_removed_parenthesis.txt
 
 corpus_cleaned_normalized.txt: corpus_cleaned.txt
 	$(call log, normalize corpus)
-	cd .. && python normalize_corpus.py
+	python normalize_corpus.py
 
-# # factored_corpus_WGNCP.txt: tmp/corpus_cleaned.txt
+factored_corpus_WGNCP.txt: corpus_cleaned.txt
+	$(call log, tag corpus)
+	./tag_corpus.sh
 
-# # factored_corpus_WGNCPL.txt: factored_corpus_WGNCP.txt
+factored_corpus_WGNCPL.txt: factored_corpus_WGNCP.txt
+	$(call log, merge lemma factor)
+	python factors_zip_lemmas.py

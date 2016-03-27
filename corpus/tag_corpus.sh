@@ -24,7 +24,7 @@ echo $(date): finished tagging
 
 echo $(date): converting to ascii
 
-(cd .. ; python convert_to_ascii.py)
+python convert_to_ascii.py
 
 echo $(date): concatenating files
 
