@@ -12,7 +12,7 @@ import argparse
 def print_predictor_tables(file, text_numbers, ngram_lm, ngram_predictor_orders, entropy, only_targets_in, flm_model_filenames, debug):
     prediction_texts = PredictionTexts(text_numbers, only_targets_in=only_targets_in)
     predictors = [HumanPredictor(), UnigramCachePredictor()] + \
-        map(lambda order: NgramPredictor(ngram_lm=ngram_lm, order=order), ngram_predictor_orders) + \
+        map(lambda order: NgramPredictor(order=order, ngram_lm=ngram_lm), ngram_predictor_orders) + \
         [FLM_Specification(flm_model_filename).predictor() for flm_model_filename in flm_model_filenames]
     print_table(file, predictors, prediction_texts, entropy, debug)
 

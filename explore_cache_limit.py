@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 def cache_different_limits(limits):
     prediction_texts = PredictionTexts([1, 2, 3, 4, 5, 7, 8])
-    ngram_predictions = NgramPredictor(None, order=4).batch_predict(prediction_texts)
+    ngram_predictions = NgramPredictor(4).batch_predict(prediction_texts)
     perplexities = []
     for limit in limits:
         perplexity = predictor_perplexity(

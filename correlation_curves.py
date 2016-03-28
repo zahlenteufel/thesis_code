@@ -18,7 +18,7 @@ def correlation_curve_ngrams(texts, ngram_orders):
         x = []
         y = []
 
-        ngram_probs = NgramPredictor("corpus/4gram.lm.gz", order).batch_predict(texts)
+        ngram_probs = NgramPredictor(order).batch_predict(texts)
 
         for target, cloze_prob, ngram_prob in zip(targets, cloze_probs, ngram_probs):
             x.append(cloze_prob)
@@ -35,7 +35,7 @@ def correlation_curve_cache(texts, ngram_order, cache_lambdas):
     corrs = []
     targets = texts.target_words()
     cloze_probs = HumanPredictor().batch_predict(texts)
-    ngram_probs = NgramPredictor("corpus/4gram.lm.gz", ngram_order).batch_predict(texts)
+    ngram_probs = NgramPredictor(ngram_order).batch_predict(texts)
 
     for cache_lambda in cache_lambdas:
         x = []

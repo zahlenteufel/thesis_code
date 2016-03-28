@@ -3,8 +3,8 @@
 from datetime import datetime
 import os
 import glob
-import predict_this.text.text as Text
 import predict_this.flm.flm_specification as FlmSpec
+import sys
 
 LOG_FILENAME = "training.log"
 
@@ -24,27 +24,10 @@ def log(s):
 
 FACTORED_CORPUS_FILE = "corpus/factored_corpus_WGNCPL.txt"
 
-
-def dump_training_file(flm_spec, output_file):
-    for i in xrange(10000):
-        index = str(i).zfill(4)
-        tagged_filename = "corpus/tagged_chunks/%s.ascii" % index
-        tagged_text = Text.Text.from_freeling_output_file(tagged_filename)
-        # TODO: use tmpfiles
-        with open("corpus/factored_chunks/" + index, "w") as factored_file:
-            for tagged_line in tagged_text.lines():
-                factored_file.write(" ".join(map(flm_spec.convert_to_flm_format, tagged_line)) + "\n")
-        if i % 100 == 0:
-            log("factoring... %d%%" % i / 100)
-    log("done factoring chunks, concatenating")
-    os.system("./concatenate_files.sh corpus/factored_chunks/ \"*\" " + output_file)
-
-
 if not os.path.isfile(FACTORED_CORPUS_FILE):
-    flm_spec = FlmSpec.FLM_Specification("flm_models/WGNCP.flm.dummy")
-    dump_training_file(flm_spec, "corpus/factored_corpus_WGNCP.txt")
-    # TODO: execute this directly..
-    assert False, "now you have to execute factors_zip_lemmas.py in corpus"
+    print >>sys.stderr, "You first have to create a tagged corpus."
+    print >>sys.stderr, " $ cd corpus && make tagged_corpus"
+    sys.exit(1)
 
 with open("train_all_models.sh", "w") as training_script:
     print >>training_script, "#!/usr/bin/env bash\n"

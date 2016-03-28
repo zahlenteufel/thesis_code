@@ -11,10 +11,10 @@ from math import log10
 
 class NgramPredictor(Predictor):
 
-    def __init__(self, ngram_lm, order):
+    def __init__(self, order, ngram_lm=None):
         self.order = order
-        self._name = "%dgram" % order
-        self.model_file = ngram_lm or "corpus/%s.lm.gz" % self._name
+        self._name = "%d-gram" % order
+        self.model_file = ngram_lm or "models/%s.lm.gz" % self._name
 
     def batch_predict(self, prediction_text, debug=False):
         return self.probs(self.ngrams(prediction_text), debug)
