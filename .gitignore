@@ -1,9 +1,6 @@
 plots/*
 corpus/spanish_books/*
 corpus/tmp/*
-corpus/chunks/*
-corpus/tagged_chunks/*
-corpus/factored_chunks/*
 flm_models/*.gz
 flm_models/*.factored*
 train_all_models.sh
@@ -11,7 +8,6 @@ train_all_models.sh
 *.pyc
 venv/
 *.ignore
-corpus/*gram.lm.gz
 corpus/factored_corpus_WGNCPL.txt
 corpus/corpus_cleaned.txt
 corpus/corpus_cleaned_normalized.txt

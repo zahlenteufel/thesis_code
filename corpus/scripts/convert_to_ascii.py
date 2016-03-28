@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import io
 import sys
-sys.path.insert(0, "..")  # for using predict_this module
+sys.path.insert(0, "../..")  # for using predict_this module
 from predict_this.text.word import to_ascii
 from progressbar import ProgressBar
 from progress_estimator import ProgressEstimator
@@ -13,7 +13,7 @@ progress_bar.start()
 estimator = ProgressEstimator()
 
 for i in xrange(10000):
-    filename = "tagged_chunks/%s" % str(i).zfill(4)
+    filename = "tmp/tagged_chunks/%s" % str(i).zfill(4)
     if i % 10 == 0:
         print "%.2f %% completed" % (i / 100.0)
         progress_bar.update(i)

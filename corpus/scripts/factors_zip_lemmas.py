@@ -9,7 +9,7 @@ progress_bar.start()
 def get_lemmas():
     for i in xrange(1):
         progress_bar.update(i)
-        with open("tagged_chunks/%s.ascii" % str(i).zfill(4)) as f:
+        with open("tmp/tagged_chunks/%s.ascii" % str(i).zfill(4)) as f:
             for line in f:
                 if len(line) != 1:
                     lemmas = line.split()[1].split("_")
@@ -26,7 +26,7 @@ def insert_lemma_as_factor(factors, lemma):
     return ":".join(f[:1] + ["L-" + lemma] + f[1:])
 
 if __name__ == "__main__":
-    with open("factored_corpus_WGNCP.txt") as fcorpus:
+    with open("tmp/factored_corpus_WGNCP.txt") as fcorpus:
         with open("factored_corpus_WGNCPL.txt", "w") as result:
             for line in fcorpus:
                 line = line[:-1]
