@@ -38,32 +38,75 @@ Word prediction in large texts using python and srilm.
 
 ## Corpus creation
 
-There is a *Makefile* for creating the corpus from the collection of books. It will use the file in *tmp/1_joined_texts.txt* to crete the final file *corpus_cleaned_normalized.txt*.
+There is a *Makefile* for creating the corpus from the collection of books. It will use the files in *corpus/spanish_books/* to create the final files *corpus_cleaned.txt* and *corpus_cleaned_normalized.txt* and *vocabulary.txt*. The first one is used for the tagging process and the second one for the predictions using n-grams, the third file is the vocabulary of *corpus_cleaned_normalized.txt* and it's used for the entropy calculations.
 
-Example of making a corpus file from the texts in snpanish_books:
+For creating the corpus:
 ```bash
 cd corpus
-find spanish_books/ -type f -print0 -name "*.txt" | sort -z | xargs -0 cat -- > tmp/1_joined_texts.txt
 make
 ```
 
-If you need to tag it (for example when working with FLMs) you can do it by running *TAG_CORPUS.sh* (?).
+For creating the tagged corpus execute this Makefile with the target *tagged_corpus*: 
+```bash
+make tagged_corpus
+```
 
 ## Training
 
-To train a model, once you have a clean, normalized corpus (a unique file, say *corpus_cleaned_normalized.txt*), then you can run:
+To train the n-grams models from the corpus (*corpus/corpus_cleaned_normalized.txt*) execute
 
 ```bash
-ngram-count -text corpus_cleaned_normalized.txt -order 4 -unk -no-eos -lm 4-gram.lm.gz
+python train_ngrams.py
 ```
 
-This will create the model *4gram.lm.gz*.
+This will generate the files *models/1-gram.lm.gz* through *models/4-gram.lm.gz*.
 
-## Calculate correlation of probabilities with Human
+## Calculating predictions
 
+Once you have the models trained you can execute *predictor_tables.py*. For example if we want the predicitons of the 2-gram and 3-gram for the texts 1, 2 and 3, and store it in a file named TABLE then you can execute:
+
+```bash
+python predictor_tables.py -ngram_predictor_orders 2 3 text_numbers 1 2 3 > TABLE
+```
+
+This will store it in a csv file, which you can use it to plot the correlations with the predictions of the humans (cloze):
+
+```bash
+python analyze_table.py < TABLE
+```
+
+Many of these scripts have a flag for a description of the parameters using the flag *-h*.
 
 ## Entropy
 
+Yo can use the *predictor_tables.py* script with the flag *-entropy* and it will output the entropy instead of the probabilities.
+
+As this can take a while to finish .........
+
+...
+
 ## Factored Language Models
 
-> TODO
+### Training
+
+After you have a tagged corpus (*corpus/factored_corpus_WGNCPL.txt*), you can train all the models in *flm_models* executing:
+
+```bash
+python train_all_flm_models.py
+```
+
+And this will generate a script called *train_all_models.sh*, which you can edit at your convenience and then execute it:
+
+```bash
+./train_all_flm_models.sh
+```
+
+### Calculating predictions
+
+If you want to calculate the predictions using the model in *flm_models/bigramWN.flm* for the texts 1, 2 and 3, and store it in a file named TABLE then you can execute:
+
+```bash
+python predictor_tables.py -flm_model_filenames flm_models/bigramWN.flm text_numbers 1 2 3 > TABLE
+```
+
+An this will generate the predictions as in the n-gram models case.

@@ -10,7 +10,7 @@ class PredictionTexts:
         ]
 
     def lines(self):
-        return self.flatten(t.lines() for t in self._prediction_texts)
+        return flatten(t.lines() for t in self._prediction_texts)
 
     def words(self, filter_by=UniversalSet()):
         return flatten(t.words(filter_by=filter_by) for t in self._prediction_texts)

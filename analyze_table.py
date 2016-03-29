@@ -13,6 +13,16 @@ def select(table, column):
     return [row[column] for row in table]
 
 
+def read_table(file, starting_column):
+    table = []
+
+    for line in file:
+        row = line[:-1].split(",")[starting_column:]
+        probs = map(float, row)
+        table.append(probs)
+    return table
+
+
 def plot(x, y, xlabel, ylabel, title):
     plt.close()
     plt.xlabel(xlabel)
@@ -35,25 +45,11 @@ def logit_plot(x, y, xlabel, ylabel, title):
 if __name__ == "__main__":
     stdin = io.open(sys.stdin.fileno(), "r", encoding="utf-8")
 
-    header = stdin.readline()[:-1].split(",")
+    STARTING_COLUMN = 3
+    header = stdin.readline()[:-1].split(",")[STARTING_COLUMN:]
+    table = read_table(stdin, STARTING_COLUMN)
 
-    table = []
-
-    while True:
-        line = stdin.readline()[:-1]
-        if not line:
-            break
-        row = line.split(",")
-        if not row:
-            break
-        probs = map(float, row)
-
-        table.append(probs)
-    n = len(header)
-    for i in xrange(1, n):
-        name = header[0]
-        name2 = header[i]
-
-        cloze_prob, prob = select(table, 0), select(table, i)
-
-        logit_plot(cloze_prob, prob, name, name2, "probabilities")
+    for i, name in enumerate(header):
+        if i > 0:
+            cloze_prob, prob = select(table, 0), select(table, i)
+            logit_plot(cloze_prob, prob, header[0], name, "probabilities")
