@@ -2,11 +2,10 @@ import sys
 import re
 import subprocess
 from more_itertools import peekable
+from itertools import izip
 from tempfile import NamedTemporaryFile
 from predictor import Predictor
 from predictor import saturated_last
-import numpy as np
-from math import log10
 
 
 class NgramPredictor(Predictor):
@@ -19,46 +18,35 @@ class NgramPredictor(Predictor):
     def batch_predict(self, prediction_text, debug=False):
         return self.probs(self.ngrams(prediction_text), debug)
 
-    def batch_entropy(self, prediction_text, save_probs=False):
+    def target_continuations(self, target, vocabulary):
+        context = map(self.normalize, target.context())
+        for word in vocabulary:
+            return saturated_last(self.order, context + [word])
+
+    def batch_targets_prob_distributions(self, vocabulary, batch_targets):
+        batch_queries = (
+            query for target in batch_targets
+            for query in self.target_continuations(target, vocabulary))
+        batch_probs = self.probs(batch_queries)
+        for dist in group(batch_probs, len(vocabulary)):
+            yield dist
+
+    def print_distribution(self, prediction_text, filename):
         vocabulary = self.vocabulary()
         targets = prediction_text.target_words()
-        number_of_chunks = 200
-        chunk_size = len(targets) / number_of_chunks
-        result = []
-        if save_probs:
-            f_probs = open("probs.txt", "w")
-            print >>f_probs, "# list of probs for %d-gram (%s)" % (self.order, self.model_file)
-            print >>f_probs, "# vocabulary-size: %d" % len(vocabulary)
-        for i in xrange(0, len(targets), chunk_size):
-            chunk_targets = targets[i:min(len(targets), i + chunk_size)]
-            with NamedTemporaryFile() as f:
-                for j, target in enumerate(chunk_targets):
-                    context = map(self.normalize, target.context())
-                    for word in vocabulary:
-                        print >>f, " ".join(saturated_last(self.order, context + [word]))
-                f.flush()
+        # To minimize calls to ngram (which has a lot of overhead for loading the model every time),
+        # we will group several queries together in batchs.
+        number_of_batchs = 200
+        batch_size = len(targets) / number_of_batchs
+        with open(filename, "w") as file:
+            #print header (vocabulary)
+            print >>file, " ".join(vocabulary)
 
-                p = subprocess.Popen([
-                    "ngram",
-                    "-order", str(self.order),
-                    "-lm", self.model_file,
-                    "-debug", "2",
-                    "-unk",
-                    "-no-eos",
-                    "-no-sos",
-                    "-ppl", f.name],
-                    stdout=subprocess.PIPE)
-                ngram_output = p.communicate()[0]
-                probs = parse_ngram_output(len(chunk_targets) * len(vocabulary), ngram_output)
-                for i in xrange(0, len(probs), len(vocabulary)):
-                    ent = entropy(probs[i:(i + len(vocabulary))])
-                    if save_probs:
-                        for prob in probs[i:(i + len(vocabulary))]:
-                            print >>f_probs, prob
-                    result.append(ent)
-        if save_probs:
-            f_probs.close()
-        return result
+            #print body (target - conditional probability distribution for target)
+            for batch_targets in group(targets, batch_size):
+                batch_dists = self.targets_prob_distributions(vocabulary, batch_targets) 
+                for target, dist in izip(batch_targets, batch_dists):
+                    print >>file, target, " ".join(dist)
 
     def vocabulary(self):
         return set(map(lambda l: l.rstrip("\n"), open("corpus/vocabulary.txt")))
@@ -112,7 +100,6 @@ def parse_ngram_output(ngrams_len, ngram_output):
     return res
 
 
-def entropy(probs):
-    "Calculate normalized entropy"
-    V = float(len(probs))
-    return -np.math.fsum(map(lambda p: p * log10(p), probs)) / log10(V)
+def group(list, group_n):
+    for i in xrange(0, len(list), group_n):
+        yield list[i:(i + group_n)]

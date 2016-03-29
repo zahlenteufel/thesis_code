@@ -7,6 +7,12 @@ from predict_this.predictor.unigram_cache_predictor import UnigramCache
 from analyze_perplexities import interpolated_with_cache_probability
 
 
+def entropy(probs):
+    "Calculate normalized entropy"
+    V = float(len(probs))
+    return -np.math.fsum(map(lambda p: p * log10(p), probs)) / log10(V)
+
+
 def grouper(iterable, n):
     args = [iter(iterable)] * n
     return izip(*args)
