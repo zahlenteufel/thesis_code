@@ -79,11 +79,29 @@ Many of these scripts have a flag for a description of the parameters using the 
 
 ## Entropy
 
-Yo can use the *predictor_tables.py* script with the flag *-entropy* and it will output the entropy instead of the probabilities.
+Yo can use the *predictor_tables.py* script with the flag *-entropy* and it will output the entropy instead of the probabilities (Now this works only for HumanPredictor, because for n-grams it takes too long).
 
-As this can take a while to finish .........
+For calculating the entropy of n-grams (without or without cache):
 
-...
+- First you have to obtain the conditional probability distribution at the targets of a text (e.g. text number 1):
+
+```bash
+python print_distributions -text_number 1 -ngram_predictor_order 4 -output_filename DIST_4gram_text1
+```
+
+- Then you can use the ** script for calculating the entropy at each target:
+
+```bash
+python calculate_entropy_from_conditional_distributions -filename DIST_4gram_text1
+```
+
+This will output for each target the target word, the entropy, the entropy using only the top 10 predicitions and then the top 10 predictions.
+
+- If you want to calculate the entropy interpolating with you can do it with the appropiate flags:
+
+```bash
+python calculate_entropy_from_conditional_distributions -filename DIST_4gram_text1 -calculate_with_cache -cache_text_number 1 -cache_lambda 0.22
+```
 
 ## Factored Language Models
 
