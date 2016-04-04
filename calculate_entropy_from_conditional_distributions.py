@@ -5,7 +5,7 @@ import argparse
 from predict_this.text.prediction_text import PredictionText
 from predict_this.predictor.unigram_cache_predictor import UnigramCache
 from analyze_perplexities import interpolated_with_cache_probability
-from itertools import izip
+from itertools import izip, count
 
 
 def cache_snapshots(prediction_text):
@@ -53,7 +53,6 @@ def calculate_entropy_from(filename):
     num_lines = sum(1 for line in open(filename))
     with open(filename) as file:
         vocabulary = file.readline()[:-1].split(" ")
-        vocabulary_hash = set(vocabulary)
         for line_number, line in enumerate(file, 1):
             fields = line[:-1].split(" ")
             target = fields[0]
@@ -65,23 +64,25 @@ def calculate_entropy_from(filename):
 
 
 def calculate_entropy_with_cache_from(filename, cache_text_number=None, cache_lambda=None):
-    raise NotImplemented
-    # with open(filename) as file:
-    #     text = PredictionText(cache_text_number)
-    #     vocabulary = file.readline()[:-1].split(" ")
-    #     vocabulary_hash = set(vocabulary)
-    #     for line, cache_snapshot in izip(file, cache_snapshots(text)):
-    #         fields = line[:-1].split(" ")
-    #         target = fields[0]
-    #         probs = map(float, target[1:])
-    #         if cache_text_number is not None:
-    #             probs = combine_cache_probs(
-    #                 cache_lambda,
-    #                 vocabulary_hash,
-    #                 dict(zip(vocabulary, probs)),
-    #                 cache_snapshot)
-    #         best = sorted(zip(probs, vocabulary))[:10]
-    #         print target, entropy(probs), entropy(make_dist([p for p, w in best])), " ".join(w for p, w in best)
+    # TODO: this is almost exactly the same function as calculate_entropy_from, refactor later!
+    num_lines = sum(1 for line in open(filename))
+    with open(filename) as file:
+        text = PredictionText(cache_text_number)
+        vocabulary = file.readline()[:-1].split(" ")
+        vocabulary_hash = set(vocabulary)
+        for line_number, line, cache_snapshot in izip(count(1), file, cache_snapshots(text)):
+            fields = line[:-1].split(" ")
+            target = fields[0]
+            probs = map(float, fields[1:])
+            probs = combine_cache_probs(
+                cache_lambda,
+                vocabulary_hash,
+                dict(zip(vocabulary, probs)),
+                cache_snapshot)
+            best = sorted(zip(probs, vocabulary))[:10]
+            print target, entropy(probs), entropy(make_dist([p for p, w in best])), " ".join(w for p, w in best)
+            if line_number % (num_lines / 100) == 0:
+                print >>sys.stderr, "%2.f %%" % (100 * line_number / float(num_lines))
 
 
 def entropy(probs):
