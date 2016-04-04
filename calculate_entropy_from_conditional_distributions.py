@@ -46,7 +46,7 @@ def combine_cache_probs(cache_lambda, vocab, probs, cache):
     i1 = interpolate(cache_lambda, map(cache_get, intersection), map(probs.get, intersection))
     i2 = interpolate(cache_lambda, [0], map(probs.get, vocab_only_ngram))
     i3 = interpolate(cache_lambda, map(cache_get, vocab_only_cache), [0])
-    return i1 + i2 + i3
+    return dict(zip(intersection + vocab_only_ngram + vocab_only_cache, i1 + i2 + i3))
 
 
 def calculate_entropy_from(filename):
@@ -63,6 +63,12 @@ def calculate_entropy_from(filename):
                 print >>sys.stderr, "%2.f %%" % (100 * line_number / float(num_lines))
 
 
+def sort_more_probable_first(a, b):
+    w1, p1 = a
+    w2, p2 = b
+    return cmp(p2, p1)
+
+
 def calculate_entropy_with_cache_from(filename, cache_text_number=None, cache_lambda=None):
     # TODO: this is almost exactly the same function as calculate_entropy_from, refactor later!
     num_lines = sum(1 for line in open(filename))
@@ -74,13 +80,13 @@ def calculate_entropy_with_cache_from(filename, cache_text_number=None, cache_la
             fields = line[:-1].split(" ")
             target = fields[0]
             probs = map(float, fields[1:])
-            probs = combine_cache_probs(
+            new_vocab_probs = combine_cache_probs(
                 cache_lambda,
                 vocabulary_hash,
                 dict(zip(vocabulary, probs)),
                 cache_snapshot)
-            best = sorted(zip(probs, vocabulary))[:10]
-            print target, entropy(probs), entropy(make_dist([p for p, w in best])), " ".join(w for p, w in best)
+            best = sorted(new_vocab_probs.iteritems(), cmp=sort_more_probable_first)[:10]
+            print target, entropy(probs), entropy(make_dist([p for w, p in best])), " ".join(w for w, p in best)
             if line_number % (num_lines / 100) == 0:
                 print >>sys.stderr, "%2.f %%" % (100 * line_number / float(num_lines))
 
