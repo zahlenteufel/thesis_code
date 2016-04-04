@@ -92,7 +92,7 @@ python print_distributions -text_number 1 -ngram_predictor_order 4 -output_filen
 - Then you can use the ** script for calculating the entropy at each target:
 
 ```bash
-python calculate_entropy_from_conditional_distributions -filename DIST_4gram_text1
+python calculate_entropy_from_conditional_distributions.py -filename DIST_4gram_text1
 ```
 
 This will output for each target the target word, the entropy, the entropy using only the top 10 predicitions and then the top 10 predictions.

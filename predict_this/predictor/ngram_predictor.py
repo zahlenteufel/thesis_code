@@ -21,32 +21,34 @@ class NgramPredictor(Predictor):
     def target_continuations(self, target, vocabulary):
         context = map(self.normalize, target.context())
         for word in vocabulary:
-            return saturated_last(self.order, context + [word])
+            yield saturated_last(self.order, context + [word])
 
     def print_distribution(self, prediction_text, filename):
-        vocabulary = self.vocabulary()
+        vocabulary = read_vocabulary()
         targets = prediction_text.target_words()
         with open(filename, "w") as file:
-            # print header (vocabulary)
             print >>file, " ".join(vocabulary)
-
-            queries = (
-                query for target in targets
+            file.flush()
+            queries = (query for target in targets
                 for query in self.target_continuations(target, vocabulary))
-            distributions = group(self.probs(queries, batch_size=40), len(vocabulary))
+            print "total queries to be made:", len(targets) * len(vocabulary)
+            batch_size = len(vocabulary)  # 1 word per batch
+            distributions = group(
+                self.probs(queries, batch_size=batch_size), len(vocabulary))
+            contador = 0
             for target, distribution in izip(targets, distributions):
-                print >>file, target, " ".join(distribution)
-
-    def vocabulary(self):
-        return set(map(lambda l: l.rstrip("\n"), open("corpus/vocabulary.txt")))
+                print >>file, target, " ".join(map(str, distribution))
+                contador += 1
+                print 100 * float(contador) / len(targets), "%%"
 
     def normalize(self, word):
         return word.in_ascii()
 
     def probs(self, queries, debug=False, batch_size=None):
         for queries_batch in group(queries, batch_size):
+            print "processing", len(queries_batch), "queries..."
             with NamedTemporaryFile() as f:
-                for query in queries:
+                for query in queries_batch:
                     f.write(" ".join(query) + "\n")
                 f.flush()
                 ngram_output = self.call_ngram(f.name)
@@ -105,3 +107,7 @@ def group(l, group_n):
             if not res:
                 break
             yield res
+
+
+def read_vocabulary():
+    return map(lambda l: l.rstrip("\n"), open("corpus/vocabulary.txt"))

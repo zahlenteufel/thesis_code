@@ -19,10 +19,11 @@ class PredictionText:
     'holes' (TargetWords) on it that people have to guess.
     """
 
-    def __init__(self, text_index, only_targets_in):
+    def __init__(self, text_index, only_targets_in=None):
         self.only_targets_in = only_targets_in or UniversalSet()
         assert text_index in [1, 2, 3, 4, 5, 7, 8]
-        with open(os.path.dirname(os.path.realpath(__file__)) + "/texts1234578.csv", "r") as csvfile:
+        filename = os.path.dirname(os.path.realpath(__file__)) + "/texts1234578.csv"
+        with open(filename, "r") as csvfile:
             reader = UnicodeDictReader(csvfile, delimiter=',')
             text_builder = TextBuilder(text_index, reader)
             self._lines = list(text_builder.lines())

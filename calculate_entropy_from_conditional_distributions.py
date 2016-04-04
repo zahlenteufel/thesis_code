@@ -48,23 +48,36 @@ def combine_cache_probs(cache_lambda, vocab, probs, cache):
     return i1 + i2 + i3
 
 
-def calculate_entropy_from(filename, cache_text_number=None, cache_lambda=None):
+def calculate_entropy_from(filename):
     with open(filename) as file:
-        text = PredictionText(cache_text_number)
         vocabulary = file.readline()[:-1].split(" ")
         vocabulary_hash = set(vocabulary)
-        for line, cache_snapshot in izip(file, cache_snapshots(text)):
+        for line in file:
             fields = line[:-1].split(" ")
             target = fields[0]
-            probs = map(float, target[1:])
-            if cache_text_number is not None:
-                probs = combine_cache_probs(
-                    cache_lambda,
-                    vocabulary_hash,
-                    dict(zip(vocabulary, probs)),
-                    cache_snapshot)
-            best = sorted(zip(probs, vocabulary))[:10]
-            print target, entropy(probs), entropy(make_dist([p for p, w in best])), " ".join(best)
+            probs = map(float, fields[1:])
+            best = sorted(zip(probs, vocabulary), reverse=True)[:10]
+            print target, entropy(probs), entropy(make_dist([p for p, w in best])), " ".join(w for p, w in best)
+
+
+def calculate_entropy_with_cache_from(filename, cache_text_number=None, cache_lambda=None):
+    raise NotImplemented
+    # with open(filename) as file:
+    #     text = PredictionText(cache_text_number)
+    #     vocabulary = file.readline()[:-1].split(" ")
+    #     vocabulary_hash = set(vocabulary)
+    #     for line, cache_snapshot in izip(file, cache_snapshots(text)):
+    #         fields = line[:-1].split(" ")
+    #         target = fields[0]
+    #         probs = map(float, target[1:])
+    #         if cache_text_number is not None:
+    #             probs = combine_cache_probs(
+    #                 cache_lambda,
+    #                 vocabulary_hash,
+    #                 dict(zip(vocabulary, probs)),
+    #                 cache_snapshot)
+    #         best = sorted(zip(probs, vocabulary))[:10]
+    #         print target, entropy(probs), entropy(make_dist([p for p, w in best])), " ".join(w for p, w in best)
 
 
 def entropy(probs):
@@ -82,7 +95,7 @@ def make_dist(probs):
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Calculate entropy from conditional probabilities")
     parser.add_argument("-filename")
-    parser.add_argument("-calculate_with_cache", type=bool, action="store_true")
+    parser.add_argument("-calculate_with_cache", action="store_true")
     parser.add_argument("-cache_text_number", type=int, default=None)
     parser.add_argument("-cache_lambda", type=float, default=None)
     return parser.parse_args()
@@ -92,7 +105,7 @@ if __name__ == "__main__":
     if args.calculate_with_cache:
         assert args.cache_text_number is not None
         assert args.cache_lambda is not None
-        calculate_entropy_from(args.filename, args.cache_text_number, args.cache_lambda)
+        calculate_entropy_with_cache_from(args.filename, args.cache_text_number, args.cache_lambda)
     else:
         assert args.cache_text_number is None
         assert args.cache_lambda is None
