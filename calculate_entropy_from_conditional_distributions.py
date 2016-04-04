@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import sys
 import argparse
 from predict_this.text.prediction_text import PredictionText
 from predict_this.predictor.unigram_cache_predictor import UnigramCache
@@ -49,15 +50,18 @@ def combine_cache_probs(cache_lambda, vocab, probs, cache):
 
 
 def calculate_entropy_from(filename):
+    num_lines = sum(1 for line in open(filename))
     with open(filename) as file:
         vocabulary = file.readline()[:-1].split(" ")
         vocabulary_hash = set(vocabulary)
-        for line in file:
+        for line_number, line in enumerate(file, 1):
             fields = line[:-1].split(" ")
             target = fields[0]
             probs = map(float, fields[1:])
             best = sorted(zip(probs, vocabulary), reverse=True)[:10]
             print target, entropy(probs), entropy(make_dist([p for p, w in best])), " ".join(w for p, w in best)
+            if line_number % (num_lines / 100) == 0:
+                print >>sys.stderr, "%2.f %%" % (100 * line_number / float(num_lines))
 
 
 def calculate_entropy_with_cache_from(filename, cache_text_number=None, cache_lambda=None):
